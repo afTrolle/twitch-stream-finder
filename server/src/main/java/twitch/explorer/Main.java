@@ -10,8 +10,6 @@ public class Main {
         Config.init();
         TwitchScrapper scrapper = new TwitchScrapper();
         scrapper.start();
-
-
     }
 
 

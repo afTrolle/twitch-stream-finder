@@ -11,4 +11,13 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client
+
+    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
+    compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.9.1'
+
+    // gson from google
+    compile 'com.google.code.gson:gson:2.8.1'
+
 }
