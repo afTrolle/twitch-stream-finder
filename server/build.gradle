@@ -11,12 +11,10 @@ buildscript {
     }
 
     dependencies {
-        classpath 'nu.studer:gradle-jooq-plugin:2.0.9'
-        classpath 'mysql:mysql-connector-java:+'
+        classpath 'mysql:mysql-connector-java:5.1.13'
+        classpath 'org.jooq:jooq-codegen:3.10.5'
     }
 }
-
-apply plugin: 'nu.studer.jooq'
 
 repositories {
     mavenCentral()
@@ -25,42 +23,47 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    // https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-client
-
     // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
     compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.9.1'
 
-
-
     // gson from google
     compile 'com.google.code.gson:gson:2.8.1'
-    compile 'org.jooq:jooq'
 
+    //jooq
+    compile 'org.jooq:jooq:3.10.5'
+
+    compile 'mysql:mysql-connector-java:5.1.13'
+
+    // mysql connector
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.13'
 }
 
-
-
-jooq {
-    version = '3.10.4' // the default (can be omitted)
-    edition = 'OSS'    // the default (can be omitted), other allowed values are PRO, PRO_JAVA_6, and TRIAL
-
-    sample(sourceSets.main) {
-        jdbc {
-            url = 'jdbc:mysql://localhost:3306'
-            driver = 'com.mysql.jdbc.Driver'
-            user = 'root'
-            password = 'password'
-
-        }
-        generator {
-            database {
-                name = 'org.jooq.util.mysql.MySQLDatabase'
-
-            }
-        }
-
+// Use your favourite XML builder to construct the code generation configuration file
+// ----------------------------------------------------------------------------------
+def writer = new StringWriter()
+def xml = new groovy.xml.MarkupBuilder(writer)
+        .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.10.0.xsd') {
+    jdbc() {
+        driver('com.mysql.jdbc.Driver')
+        url('jdbc:mysql://localhost:3306')
+        user('root')
+        password('password')
     }
+    generator() {
+        database() {
+            name('org.jooq.util.mysql.MySQLDatabase')
+            inputSchema('twitch')
+        }
 
+        target() {
+            packageName('twitch.explorer.database.jooq.db')
+            directory('src/main/java')
+        }
+    }
 }
+
+// Run the code generator
+// ----------------------
+org.jooq.util.GenerationTool.generate(
+        javax.xml.bind.JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
+)
