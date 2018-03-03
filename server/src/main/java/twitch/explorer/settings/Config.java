@@ -22,4 +22,33 @@ public class Config {
         return rb.getString("twitchClientID");
     }
 
+
+    /**
+     * get url of MySql
+     *
+     * @return string with url to  mySql Server
+     */
+    public static String getMySqlUrl() {
+        return rb.getString("MySqlUrl");
+    }
+
+
+    /**
+     * get MySql username
+     *
+     * @return string with mySql Server UserName
+     */
+    public static String getMySqlUserName() {
+        return rb.getString("MySqlUserName");
+    }
+
+    /**
+     * get MySql password
+     *
+     * @return string with mySql Server password
+     */
+    public static String getMySqlPassword() {
+        return rb.getString("MySqlPassword");
+    }
+
 }
