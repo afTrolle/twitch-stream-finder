@@ -17,7 +17,7 @@ public class Main {
         try {
             JooqHandler jooqHandler = new JooqHandler();
 
-            jooqHandler.createGame("hello","http://helloworld.com");
+        //    jooqHandler.createGame("hello","http://helloworld.com");
         } catch (SQLException e) {
             e.printStackTrace();
         }

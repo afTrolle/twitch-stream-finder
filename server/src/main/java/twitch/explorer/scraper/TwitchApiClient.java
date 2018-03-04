@@ -9,7 +9,6 @@ import twitch.explorer.scraper.json.auth.Oauth;
 import twitch.explorer.scraper.json.games.Games;
 import twitch.explorer.scraper.json.stream.Streams;
 import twitch.explorer.scraper.json.users.Users;
-import twitch.explorer.settings.Config;
 
 /**
  * tools used can be found on how I use jersey
@@ -17,19 +16,25 @@ import twitch.explorer.settings.Config;
  */
 public class TwitchApiClient {
 
-    private Gson gson;
-    private String authKey;
-    private Client client;
+    private final Gson gson;
 
-    private WebResource gamesRes;
-    private WebResource streamsRes;
-    private WebResource usersRes;
-    private WebResource authRes;
+    private final String twitchClientKey;
+    private final String twitchSecretKey;
 
-    public TwitchApiClient() {
+    private Oauth authToken;
+
+    private final WebResource gamesRes;
+    private final WebResource streamsRes;
+    private final WebResource usersRes;
+    private final WebResource authRes;
+
+    TwitchApiClient(String twitchClientKey, String twitchSecretKey) {
         gson = new Gson();
-        authKey = Config.getTwitchClientId();
-        client = Client.create();
+
+        this.twitchClientKey = twitchClientKey;
+        this.twitchSecretKey = twitchSecretKey;
+
+        Client client = Client.create();
         WebResource rootRes = client.resource("https://api.twitch.tv/helix/");
 
         //Auth
@@ -40,9 +45,12 @@ public class TwitchApiClient {
         streamsRes = rootRes.path("streams");
         usersRes = rootRes.path("users");
 
-        // set print or not
+        // set print for jersey for debugging.
         // client.addFilter(new LoggingFilter(System.out));
+
+        updateToken();
     }
+
 
     /**
      * Gets Streams from twitch server
@@ -50,7 +58,7 @@ public class TwitchApiClient {
      */
     public Streams getStreams(MultivaluedMapImpl queryParams) throws UniformInterfaceException {
         WebResource resource = (queryParams == null ? streamsRes : streamsRes.queryParams(queryParams));
-        String jsonResponse = setHeaderAuth(resource, authKey).get(String.class);
+        String jsonResponse = setHeaderAuth(resource).get(String.class);
         return gson.fromJson(jsonResponse, Streams.class);
     }
 
@@ -60,7 +68,7 @@ public class TwitchApiClient {
      */
     public Users getUsers(MultivaluedMapImpl queryParams) throws UniformInterfaceException {
         WebResource resource = (queryParams == null ? usersRes : usersRes.queryParams(queryParams));
-        String jsonResponse = setHeaderAuth(resource, authKey).get(String.class);
+        String jsonResponse = setHeaderAuth(resource).get(String.class);
         return gson.fromJson(jsonResponse, Users.class);
     }
 
@@ -70,31 +78,48 @@ public class TwitchApiClient {
      */
     public Games getGames(MultivaluedMapImpl queryParams) throws UniformInterfaceException {
         WebResource resource = (queryParams == null ? gamesRes : gamesRes.queryParams(queryParams));
-        String jsonResponse = setHeaderAuth(resource, authKey).get(String.class);
+        String jsonResponse = setHeaderAuth(resource).get(String.class);
         return gson.fromJson(jsonResponse, Games.class);
     }
 
-    private static WebResource.Builder setHeaderAuth(WebResource resource, String authKey) {
-        return resource.header("Client-ID", authKey);
+    private WebResource.Builder setHeaderAuth(WebResource resource) {
+        WebResource.Builder builder = resource.header("Client-ID", twitchClientKey);
+        if (authToken != null) {
+            builder = builder.header("Authorization", " Bearer " + authToken.accessToken);
+        }
+        return builder;
     }
 
-    public Oauth getAuthToken(String clientSecret) {
+
+    private Oauth getAuthToken() throws UniformInterfaceException {
         MultivaluedMapImpl map = new MultivaluedMapImpl();
-        map.add("client_id", authKey);
-        map.add("client_secret", clientSecret);
+        map.add("client_id", twitchClientKey);
+        map.add("client_secret", twitchSecretKey);
         map.add("grant_type", "client_credentials");
-        String jsonRepsone = authRes.queryParams(map).post(String.class);
-        return gson.fromJson(jsonRepsone, Oauth.class);
+        String jsonResponse = authRes.queryParams(map).post(String.class);
+        return gson.fromJson(jsonResponse, Oauth.class);
     }
 
-    public Oauth refershToken(String clientSecret, Oauth oldAuth) {
+
+    private void updateToken() {
+        if (twitchSecretKey != null && !twitchSecretKey.isEmpty()) {
+            if (authToken == null || authToken.isTokenExperied()) {
+                authToken = getAuthToken();
+            }
+        }
+    }
+
+
+    /*
+    private Oauth refershToken(Oauth oldAuth) throws UniformInterfaceException {
         MultivaluedMapImpl map = new MultivaluedMapImpl();
-        map.add("client_id", authKey);
-        map.add("client_secret", clientSecret);
+        map.add("client_id", twitchClientKey);
+        map.add("client_secret", twitchSecretKey);
         map.add("grant_type", "refresh_token");
         map.add("refresh_token", oldAuth.accessToken);
-        String jsonRepsone = authRes.queryParams(map).post(String.class);
-        return gson.fromJson(jsonRepsone, Oauth.class);
+        String jsonResponse = authRes.queryParams(map).post(String.class);
+        return gson.fromJson(jsonResponse, Oauth.class);
     }
+    */
 
 }

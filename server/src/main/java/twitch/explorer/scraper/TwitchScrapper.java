@@ -2,6 +2,7 @@ package twitch.explorer.scraper;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 import twitch.explorer.scraper.json.stream.Streams;
+import twitch.explorer.settings.Config;
 
 public class TwitchScrapper {
 
@@ -9,23 +10,36 @@ public class TwitchScrapper {
     private boolean isScraping = true;
     private String streamPagnation = "";
 
+    private double timeBetweenQueriesMillis;
+
+
     public void start() {
-        client = new TwitchApiClient();
+        String twitchApiClient = Config.getTwitchClientId();
+        String twitchClientSecret = Config.getTwtichClientSecret();
+
+        client = new TwitchApiClient(twitchApiClient, twitchClientSecret);
         isScraping = true;
         streamPagnation = "";
 
-    //    new Thread(() -> loopFunction()).start();
+        setQueryInterval(!twitchClientSecret.isEmpty());
 
+       // client.getStreams(null);
+            new Thread(() -> loopFunction()).start();
+    }
+
+    private void setQueryInterval(boolean isAuthenticated) {
+        final double millisPerMinute = 60 * 1000;
+        if (isAuthenticated) {
+            timeBetweenQueriesMillis = millisPerMinute / 120D;
+        } else {
+            timeBetweenQueriesMillis = millisPerMinute / 30D;
+        }
     }
 
     public void stop() {
         isScraping = false;
     }
 
-    private final int queriesPerMinAuthed = 120;
-    private final int queriesPerMinute = 30;
-    private final int millisPerMinute = 60 * 1000;
-    private final double queriesPerMillis = (double) millisPerMinute / (double) queriesPerMinute;
 
     private void loopFunction() {
         while (isScraping) {
@@ -37,16 +51,40 @@ public class TwitchScrapper {
             map.add("type", "live");
             Streams stream = client.getStreams(map);
             streamPagnation = stream.pagination.cursor;
-            if (stream.pagination.cursor.isEmpty()){
+            numOfStreams += stream.data.size();
+            if (stream.pagination.cursor.isEmpty()) {
                 isScraping = false;
             }
+            printStreams();
         }
     }
 
+    private int numOfStreams = 0;
+
+    private void printStreams(){
+       // if (numOfStreams % 1000  == 0)
+            System.out.println("num Streams: "+numOfStreams);
+    }
+
+    private Long previousSleep;
 
     private void sleep() {
+
         try {
-            Thread.sleep((long) queriesPerMillis);
+
+
+            Long currentTimeMillis = System.currentTimeMillis();
+            if (previousSleep == null){
+                previousSleep = currentTimeMillis;
+            }
+            Long elapsedTime =  (currentTimeMillis-previousSleep);
+            if (elapsedTime > timeBetweenQueriesMillis){
+                previousSleep = System.currentTimeMillis();
+                return;
+            }
+            Long timeToSleep = (long) (timeBetweenQueriesMillis - elapsedTime);
+            Thread.sleep(timeToSleep);
+            previousSleep = System.currentTimeMillis();
         } catch (InterruptedException e) {
             stop();
         }
