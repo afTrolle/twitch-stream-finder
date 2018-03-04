@@ -22,6 +22,14 @@ public class Config {
         return rb.getString("twitchClientID");
     }
 
+    /**
+     * Get twitch api Client secret gives 4x pooling time
+     * @return returns string with twitch client secret code
+     */
+    public static String getTwtichClientSecret() {
+        return rb.getString("twitchClientSeceret");
+    }
+
 
     /**
      * get url of MySql
