@@ -11,12 +11,10 @@ public class Main {
 
     public static void main(String[] args) {
         Config.init();
-        TwitchScrapper scrapper = new TwitchScrapper();
-        scrapper.start();
-
         try {
             JooqHandler jooqHandler = new JooqHandler();
-
+            TwitchScrapper scrapper = new TwitchScrapper(jooqHandler);
+            scrapper.start();
         //    jooqHandler.createGame("hello","http://helloworld.com");
         } catch (SQLException e) {
             e.printStackTrace();

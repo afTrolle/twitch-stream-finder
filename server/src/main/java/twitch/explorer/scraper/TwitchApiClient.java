@@ -1,6 +1,7 @@
 package twitch.explorer.scraper;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -8,7 +9,10 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import twitch.explorer.scraper.json.auth.Oauth;
 import twitch.explorer.scraper.json.games.Games;
 import twitch.explorer.scraper.json.stream.Streams;
+import twitch.explorer.scraper.json.users.User;
 import twitch.explorer.scraper.json.users.Users;
+
+import java.util.ArrayList;
 
 /**
  * tools used can be found on how I use jersey
@@ -66,6 +70,20 @@ public class TwitchApiClient {
      * Gets Streams from twitch server
      * https://dev.twitch.tv/docs/api/reference#get-streams
      */
+    public Streams getHundredStreamsByCursor(String streamCursor) {
+        MultivaluedMapImpl map = new MultivaluedMapImpl();
+        if (streamCursor != null && !streamCursor.isEmpty())
+            map.add("after", streamCursor);
+        map.add("first", "100");
+        // map.add("type", "live");
+        return getStreams(map);
+    }
+
+
+    /**
+     * Gets Streams from twitch server
+     * https://dev.twitch.tv/docs/api/reference#get-streams
+     */
     public Users getUsers(MultivaluedMapImpl queryParams) throws UniformInterfaceException {
         WebResource resource = (queryParams == null ? usersRes : usersRes.queryParams(queryParams));
         String jsonResponse = setHeaderAuth(resource).get(String.class);
@@ -108,6 +126,16 @@ public class TwitchApiClient {
             }
         }
     }
+
+    public Users getUsers(ArrayList<Integer> userCollection) {
+        MultivaluedMapImpl map = new MultivaluedMapImpl();
+        for (Integer userId : userCollection) {
+            map.add("id", userId.toString());
+        }
+        return getUsers(map);
+    }
+
+
 
 
     /*
