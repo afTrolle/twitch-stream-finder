@@ -40,7 +40,7 @@ import twitch.explorer.database.jooq.db.tables.records.UserRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -1371746633;
+    private static final long serialVersionUID = -2042381418;
 
     /**
      * The reference instance of <code>twitch.user</code>
@@ -73,7 +73,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>twitch.user.description</code>.
      */
-    public final TableField<UserRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<UserRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>twitch.user.user_type_id</code>.

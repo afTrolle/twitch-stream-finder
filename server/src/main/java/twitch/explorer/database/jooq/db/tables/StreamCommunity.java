@@ -16,7 +16,6 @@ import org.jooq.Name;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -39,7 +38,7 @@ import twitch.explorer.database.jooq.db.tables.records.StreamCommunityRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StreamCommunity extends TableImpl<StreamCommunityRecord> {
 
-    private static final long serialVersionUID = 1267117841;
+    private static final long serialVersionUID = -1164091461;
 
     /**
      * The reference instance of <code>twitch.stream_community</code>
@@ -57,7 +56,7 @@ public class StreamCommunity extends TableImpl<StreamCommunityRecord> {
     /**
      * The column <code>twitch.stream_community.stream_id</code>.
      */
-    public final TableField<StreamCommunityRecord, Integer> STREAM_ID = createField("stream_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<StreamCommunityRecord, Double> STREAM_ID = createField("stream_id", org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
 
     /**
      * The column <code>twitch.stream_community.community_id</code>.
@@ -106,15 +105,7 @@ public class StreamCommunity extends TableImpl<StreamCommunityRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.STREAM_COMMUNITY_COMMUNITY_ID_FK_IDX, Indexes.STREAM_COMMUNITY_STREAM_COMMUNITY_PRIMARY, Indexes.STREAM_COMMUNITY_STREAM_ID_FK_IDX);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<UniqueKey<StreamCommunityRecord>> getKeys() {
-        return Arrays.<UniqueKey<StreamCommunityRecord>>asList(Keys.KEY_STREAM_COMMUNITY_STREAM_COMMUNITY_PRIMARY);
+        return Arrays.<Index>asList(Indexes.STREAM_COMMUNITY_COMMUNITY_ID_FK_IDX, Indexes.STREAM_COMMUNITY_FK_STREAM_COMMUNITY_STREAM_IDX);
     }
 
     /**
@@ -122,7 +113,7 @@ public class StreamCommunity extends TableImpl<StreamCommunityRecord> {
      */
     @Override
     public List<ForeignKey<StreamCommunityRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<StreamCommunityRecord, ?>>asList(Keys.FK_STREM_COMMUNITY_STREAM, Keys.FK_STREAM_COMMUNITY_COMMUNITY);
+        return Arrays.<ForeignKey<StreamCommunityRecord, ?>>asList(Keys.FK_STREAM_COMMUNITY_STREAM, Keys.FK_STREAM_COMMUNITY_COMMUNITY);
     }
 
     /**

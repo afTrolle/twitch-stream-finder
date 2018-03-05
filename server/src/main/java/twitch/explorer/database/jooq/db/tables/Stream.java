@@ -12,7 +12,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
@@ -41,7 +40,7 @@ import twitch.explorer.database.jooq.db.tables.records.StreamRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Stream extends TableImpl<StreamRecord> {
 
-    private static final long serialVersionUID = 1874048137;
+    private static final long serialVersionUID = 1119531935;
 
     /**
      * The reference instance of <code>twitch.stream</code>
@@ -59,7 +58,7 @@ public class Stream extends TableImpl<StreamRecord> {
     /**
      * The column <code>twitch.stream.stream_id</code>.
      */
-    public final TableField<StreamRecord, Integer> STREAM_ID = createField("stream_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<StreamRecord, Double> STREAM_ID = createField("stream_id", org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
 
     /**
      * The column <code>twitch.stream.title</code>.
@@ -84,7 +83,7 @@ public class Stream extends TableImpl<StreamRecord> {
     /**
      * The column <code>twitch.stream.view_count</code>. latest read view count
      */
-    public final TableField<StreamRecord, String> VIEW_COUNT = createField("view_count", org.jooq.impl.SQLDataType.VARCHAR(45).nullable(false), this, "latest read view count");
+    public final TableField<StreamRecord, Integer> VIEW_COUNT = createField("view_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "latest read view count");
 
     /**
      * The column <code>twitch.stream.user_id</code>.
@@ -149,14 +148,6 @@ public class Stream extends TableImpl<StreamRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.STREAM_GAME_ID_FK_IDX, Indexes.STREAM_LANGUAGE_ID_FK_IDX, Indexes.STREAM_PRIMARY, Indexes.STREAM_STREAM_ID_UNIQUE, Indexes.STREAM_STREAM_TYPE_ID_FK_IDX, Indexes.STREAM_USER_ID_FK_a7_IDX);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<StreamRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_STREAM;
     }
 
     /**
