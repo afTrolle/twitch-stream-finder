@@ -9,6 +9,7 @@ import javax.annotation.Generated;
 import twitch.explorer.database.jooq.db.tables.BroadcasterType;
 import twitch.explorer.database.jooq.db.tables.Client;
 import twitch.explorer.database.jooq.db.tables.Community;
+import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
 import twitch.explorer.database.jooq.db.tables.Language;
 import twitch.explorer.database.jooq.db.tables.Stream;
@@ -47,6 +48,11 @@ User’s broadcaster type: "partner", "affiliate", or "".
      * The table <code>twitch.community</code>.
      */
     public static final Community COMMUNITY = twitch.explorer.database.jooq.db.tables.Community.COMMUNITY;
+
+    /**
+     * The table <code>twitch.followers</code>.
+     */
+    public static final Followers FOLLOWERS = twitch.explorer.database.jooq.db.tables.Followers.FOLLOWERS;
 
     /**
      * The table <code>twitch.game</code>.

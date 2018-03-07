@@ -13,6 +13,7 @@ import org.jooq.impl.Internal;
 import twitch.explorer.database.jooq.db.tables.BroadcasterType;
 import twitch.explorer.database.jooq.db.tables.Client;
 import twitch.explorer.database.jooq.db.tables.Community;
+import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
 import twitch.explorer.database.jooq.db.tables.Language;
 import twitch.explorer.database.jooq.db.tables.Stream;
@@ -47,6 +48,7 @@ public class Indexes {
     public static final Index CLIENT_PRIMARY = Indexes0.CLIENT_PRIMARY;
     public static final Index COMMUNITY_NAME_UNIQUE = Indexes0.COMMUNITY_NAME_UNIQUE;
     public static final Index COMMUNITY_PRIMARY = Indexes0.COMMUNITY_PRIMARY;
+    public static final Index FOLLOWERS_FK_FOLLOWERS_USER_IDX = Indexes0.FOLLOWERS_FK_FOLLOWERS_USER_IDX;
     public static final Index GAME_ART_URL_UNIQUE = Indexes0.GAME_ART_URL_UNIQUE;
     public static final Index GAME_ID_UNIQUE = Indexes0.GAME_ID_UNIQUE;
     public static final Index GAME_NAME_UNIQUE = Indexes0.GAME_NAME_UNIQUE;
@@ -85,6 +87,7 @@ public class Indexes {
         public static Index CLIENT_PRIMARY = Internal.createIndex("PRIMARY", Client.CLIENT, new OrderField[] { Client.CLIENT.CLIENT_ID }, true);
         public static Index COMMUNITY_NAME_UNIQUE = Internal.createIndex("name_UNIQUE", Community.COMMUNITY, new OrderField[] { Community.COMMUNITY.NAME }, true);
         public static Index COMMUNITY_PRIMARY = Internal.createIndex("PRIMARY", Community.COMMUNITY, new OrderField[] { Community.COMMUNITY.COMMUNITY_ID }, true);
+        public static Index FOLLOWERS_FK_FOLLOWERS_USER_IDX = Internal.createIndex("fk_followers_user_idx", Followers.FOLLOWERS, new OrderField[] { Followers.FOLLOWERS.USER_ID }, false);
         public static Index GAME_ART_URL_UNIQUE = Internal.createIndex("art_url_UNIQUE", Game.GAME, new OrderField[] { Game.GAME.ART_URL }, true);
         public static Index GAME_ID_UNIQUE = Internal.createIndex("id_UNIQUE", Game.GAME, new OrderField[] { Game.GAME.GAME_ID }, true);
         public static Index GAME_NAME_UNIQUE = Internal.createIndex("name_UNIQUE", Game.GAME, new OrderField[] { Game.GAME.NAME }, true);

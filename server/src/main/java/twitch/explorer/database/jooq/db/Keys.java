@@ -14,6 +14,7 @@ import org.jooq.impl.Internal;
 import twitch.explorer.database.jooq.db.tables.BroadcasterType;
 import twitch.explorer.database.jooq.db.tables.Client;
 import twitch.explorer.database.jooq.db.tables.Community;
+import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
 import twitch.explorer.database.jooq.db.tables.Language;
 import twitch.explorer.database.jooq.db.tables.Stream;
@@ -25,6 +26,7 @@ import twitch.explorer.database.jooq.db.tables.Vote;
 import twitch.explorer.database.jooq.db.tables.records.BroadcasterTypeRecord;
 import twitch.explorer.database.jooq.db.tables.records.ClientRecord;
 import twitch.explorer.database.jooq.db.tables.records.CommunityRecord;
+import twitch.explorer.database.jooq.db.tables.records.FollowersRecord;
 import twitch.explorer.database.jooq.db.tables.records.GameRecord;
 import twitch.explorer.database.jooq.db.tables.records.LanguageRecord;
 import twitch.explorer.database.jooq.db.tables.records.StreamCommunityRecord;
@@ -94,6 +96,7 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<FollowersRecord, UserRecord> FK_FOLLOWERS_USER = ForeignKeys0.FK_FOLLOWERS_USER;
     public static final ForeignKey<StreamRecord, GameRecord> FK_STREAM_GAME = ForeignKeys0.FK_STREAM_GAME;
     public static final ForeignKey<StreamRecord, StreamTypeRecord> FK_STREAM_STREAM_TYPE = ForeignKeys0.FK_STREAM_STREAM_TYPE;
     public static final ForeignKey<StreamRecord, LanguageRecord> FK_STREAM_LANGUAGE = ForeignKeys0.FK_STREAM_LANGUAGE;
@@ -144,6 +147,7 @@ public class Keys {
     }
 
     private static class ForeignKeys0 {
+        public static final ForeignKey<FollowersRecord, UserRecord> FK_FOLLOWERS_USER = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_USER_PRIMARY, Followers.FOLLOWERS, "fk_followers_user", Followers.FOLLOWERS.USER_ID);
         public static final ForeignKey<StreamRecord, GameRecord> FK_STREAM_GAME = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_GAME_PRIMARY, Stream.STREAM, "fk_stream_game", Stream.STREAM.GAME_ID);
         public static final ForeignKey<StreamRecord, StreamTypeRecord> FK_STREAM_STREAM_TYPE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_STREAM_TYPE_PRIMARY, Stream.STREAM, "fk_stream_stream_type", Stream.STREAM.STREAM_TYPE_ID);
         public static final ForeignKey<StreamRecord, LanguageRecord> FK_STREAM_LANGUAGE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_LANGUAGE_PRIMARY, Stream.STREAM, "fk_stream_language", Stream.STREAM.LANGUAGE_ID);

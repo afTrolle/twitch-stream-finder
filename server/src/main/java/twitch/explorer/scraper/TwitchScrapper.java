@@ -4,12 +4,15 @@ import org.jooq.Record1;
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
 import twitch.explorer.database.jooq.db.tables.records.*;
-import twitch.explorer.scraper.json.games.Game;
-import twitch.explorer.scraper.json.games.Games;
-import twitch.explorer.scraper.json.stream.Stream;
-import twitch.explorer.scraper.json.stream.Streams;
-import twitch.explorer.scraper.json.users.User;
-import twitch.explorer.scraper.json.users.Users;
+import twitch.explorer.scraper.twitchApi.TwitchApiConfig;
+import twitch.explorer.scraper.twitchApi.json.games.Game;
+import twitch.explorer.scraper.twitchApi.json.games.Games;
+import twitch.explorer.scraper.twitchApi.json.stream.Stream;
+import twitch.explorer.scraper.twitchApi.json.stream.Streams;
+import twitch.explorer.scraper.twitchApi.json.users.User;
+import twitch.explorer.scraper.twitchApi.json.users.Users;
+import twitch.explorer.scraper.twitchApi.TwitchApiClient;
+import twitch.explorer.settings.Config;
 import twitch.explorer.utils.Printer;
 
 import java.sql.Timestamp;
@@ -19,6 +22,7 @@ public class TwitchScrapper {
 
     private final JooqHandler jooqHandler;
     private TwitchApiClient client;
+    private TwitchApiClient followerClient;
     private boolean isScraping = true;
 
     public TwitchScrapper(JooqHandler jooqHandler) {
@@ -27,10 +31,22 @@ public class TwitchScrapper {
 
     public void start() {
 
-        client = new TwitchApiClient();
+        Config config = Config.get();
+        TwitchApiConfig apiConfig = new TwitchApiConfig(config.getTwitchClientId(), config.getTwitchClientSecret(), config.getTwitchRateLimit());
+        client = new TwitchApiClient(apiConfig);
+
+        TwitchApiConfig apiFollowerConfig = new TwitchApiConfig(config.getTwitchFollowerClientId(), config.getTwitchFollowerClientSecret(), config.getTwitchFollowerRateLimit());
+        followerClient = new TwitchApiClient(apiFollowerConfig);
+
         isScraping = true;
 
         new Thread(this::loopFunction).start();
+
+        new Thread(this::fetchFollowers).start();
+    }
+
+    private void fetchFollowers() {
+
     }
 
 
@@ -50,6 +66,7 @@ public class TwitchScrapper {
     }
 
     private void updateLiveUsers(HashMap<String, Stream> liveStreams) {
+
 
     }
 

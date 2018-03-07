@@ -5,8 +5,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import twitch.explorer.database.jooq.db.Tables;
 import twitch.explorer.database.jooq.db.tables.records.*;
-import twitch.explorer.scraper.json.games.Game;
-import twitch.explorer.scraper.json.stream.Stream;
+import twitch.explorer.scraper.twitchApi.json.games.Game;
 import twitch.explorer.settings.Config;
 
 import java.sql.*;
@@ -124,7 +123,7 @@ public class JooqHandler {
         return record;
     }
 
-    public UserRecord createUser(twitch.explorer.scraper.json.users.User userJson, UserTypeRecord userType, BroadcasterTypeRecord broadcasterType) {
+    public UserRecord createUser(twitch.explorer.scraper.twitchApi.json.users.User userJson, UserTypeRecord userType, BroadcasterTypeRecord broadcasterType) {
         UserRecord userRecord = create.newRecord(Tables.USER);
         userRecord.setBroadcasterTypeId(broadcasterType.getBroadcasterTypeId());
         userRecord.setDescription(userJson.description);
@@ -146,7 +145,7 @@ public class JooqHandler {
 
     private final DateTimeFormatter dtf = DateTimeFormatter.ISO_INSTANT;
 
-    public StreamRecord createStream(GameRecord game, LanguageRecord language, StreamTypeRecord streamType, UserRecord user, twitch.explorer.scraper.json.stream.Stream stream) {
+    public StreamRecord createStream(GameRecord game, LanguageRecord language, StreamTypeRecord streamType, UserRecord user, twitch.explorer.scraper.twitchApi.json.stream.Stream stream) {
         StreamRecord record = create.newRecord(STREAM);
         record.setViewCount(stream.viewerCount);
         // record.setEnded();

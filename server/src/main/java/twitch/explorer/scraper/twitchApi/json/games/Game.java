@@ -1,5 +1,5 @@
 
-package twitch.explorer.scraper.json.games;
+package twitch.explorer.scraper.twitchApi.json.games;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

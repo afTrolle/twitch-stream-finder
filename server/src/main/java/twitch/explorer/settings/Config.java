@@ -84,4 +84,16 @@ public class Config {
     public int getUpdateLiveUsersInterval() {
         return Integer.parseInt(rb.getString("twitchUpdateLiveUsersInterval"));
     }
+
+    public int getTwitchFollowerRateLimit() {
+        return Integer.parseInt(rb.getString("twitchFollowerLimit"));
+    }
+
+    public String getTwitchFollowerClientSecret() {
+        return rb.getString("twitchFollowerSecret");
+    }
+
+    public String getTwitchFollowerClientId() {
+        return rb.getString("twitchFollowerClientID");
+    }
 }

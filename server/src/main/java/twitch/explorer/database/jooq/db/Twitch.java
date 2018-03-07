@@ -17,6 +17,7 @@ import org.jooq.impl.SchemaImpl;
 import twitch.explorer.database.jooq.db.tables.BroadcasterType;
 import twitch.explorer.database.jooq.db.tables.Client;
 import twitch.explorer.database.jooq.db.tables.Community;
+import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
 import twitch.explorer.database.jooq.db.tables.Language;
 import twitch.explorer.database.jooq.db.tables.Stream;
@@ -40,7 +41,7 @@ import twitch.explorer.database.jooq.db.tables.Vote;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Twitch extends SchemaImpl {
 
-    private static final long serialVersionUID = 918918976;
+    private static final long serialVersionUID = 856160126;
 
     /**
      * The reference instance of <code>twitch</code>
@@ -62,6 +63,11 @@ User’s broadcaster type: "partner", "affiliate", or "".
      * The table <code>twitch.community</code>.
      */
     public final Community COMMUNITY = twitch.explorer.database.jooq.db.tables.Community.COMMUNITY;
+
+    /**
+     * The table <code>twitch.followers</code>.
+     */
+    public final Followers FOLLOWERS = twitch.explorer.database.jooq.db.tables.Followers.FOLLOWERS;
 
     /**
      * The table <code>twitch.game</code>.
@@ -131,6 +137,7 @@ User’s broadcaster type: "partner", "affiliate", or "".
             BroadcasterType.BROADCASTER_TYPE,
             Client.CLIENT,
             Community.COMMUNITY,
+            Followers.FOLLOWERS,
             Game.GAME,
             Language.LANGUAGE,
             Stream.STREAM,

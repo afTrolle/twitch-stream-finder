@@ -1,5 +1,5 @@
 
-package twitch.explorer.scraper.json.auth;
+package twitch.explorer.scraper.twitchApi.json.auth;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

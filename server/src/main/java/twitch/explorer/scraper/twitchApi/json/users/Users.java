@@ -1,12 +1,11 @@
 
-package twitch.explorer.scraper.json.users;
+package twitch.explorer.scraper.twitchApi.json.users;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import twitch.explorer.scraper.json.users.User;
 
 public class Users {
 

@@ -1,5 +1,5 @@
 
-package twitch.explorer.scraper.json.stream;
+package twitch.explorer.scraper.twitchApi.json.stream;
 
 import java.util.ArrayList;
 import java.util.List;

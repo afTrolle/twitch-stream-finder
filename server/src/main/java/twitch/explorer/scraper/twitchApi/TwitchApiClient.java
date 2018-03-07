@@ -1,18 +1,17 @@
-package twitch.explorer.scraper;
+package twitch.explorer.scraper.twitchApi;
 
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import twitch.explorer.scraper.json.games.Game;
-import twitch.explorer.scraper.json.games.Games;
-import twitch.explorer.scraper.json.stream.Streams;
-import twitch.explorer.scraper.json.users.Users;
+import twitch.explorer.scraper.twitchApi.json.games.Game;
+import twitch.explorer.scraper.twitchApi.json.games.Games;
+import twitch.explorer.scraper.twitchApi.json.stream.Streams;
+import twitch.explorer.scraper.twitchApi.json.users.Users;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * tools used can be found on how I use jersey
@@ -29,9 +28,9 @@ public class TwitchApiClient {
 
     private final TwitchRateLimiter twitchRateLimiter;
 
-    TwitchApiClient() {
+    public TwitchApiClient(TwitchApiConfig config) {
         gson = new Gson();
-        twitchRateLimiter = TwitchRateLimiter.get();
+        twitchRateLimiter = new TwitchRateLimiter(config);
 
         Client client = Client.create();
         WebResource rootRes = client.resource("https://api.twitch.tv/helix/");
@@ -46,7 +45,7 @@ public class TwitchApiClient {
 
         //Auth
         WebResource authRes = client.resource("https://id.twitch.tv/oauth2/token");
-        apiAuth = new TwitchApiAuth(gson, authRes);
+        apiAuth = new TwitchApiAuth(gson, authRes, config, twitchRateLimiter);
     }
 
     /**

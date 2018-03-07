@@ -1,11 +1,10 @@
 
-package twitch.explorer.scraper.json.games;
+package twitch.explorer.scraper.twitchApi.json.games;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import twitch.explorer.scraper.json.games.Game;
 
 public class Games {
 

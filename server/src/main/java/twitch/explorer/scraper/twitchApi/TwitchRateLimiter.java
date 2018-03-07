@@ -1,25 +1,14 @@
-package twitch.explorer.scraper;
+package twitch.explorer.scraper.twitchApi;
 
-import twitch.explorer.settings.Config;
 
 public class TwitchRateLimiter {
 
-    private static TwitchRateLimiter twitchRateLimiter;
     private Long previousSleep;
     private final double timeBetweenQueriesMillis;
 
-    public static TwitchRateLimiter get() {
-        if (twitchRateLimiter == null) {
-            twitchRateLimiter = new TwitchRateLimiter();
-        }
-        return twitchRateLimiter;
-    }
-
-    private TwitchRateLimiter() {
+    TwitchRateLimiter(TwitchApiConfig config) {
         final double millisPerMinute = 60 * 1000;
-        final Config config = Config.get();
-        final int numberOfQueriesPerMin = config.getTwitchRateLimit();
-        timeBetweenQueriesMillis = millisPerMinute / numberOfQueriesPerMin;
+        timeBetweenQueriesMillis = millisPerMinute / (double) config.rateLimit;
     }
 
     public void sleep() {

@@ -1,10 +1,10 @@
-package twitch.explorer.scraper;
+package twitch.explorer.scraper.twitchApi;
 
 import com.google.gson.Gson;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import twitch.explorer.scraper.json.auth.Oauth;
+import twitch.explorer.scraper.twitchApi.json.auth.Oauth;
 import twitch.explorer.settings.Config;
 
 public class TwitchApiAuth {
@@ -17,12 +17,11 @@ public class TwitchApiAuth {
 
     private Oauth authToken;
 
-    public TwitchApiAuth(Gson gson, WebResource authRes) {
+    public TwitchApiAuth(Gson gson, WebResource authRes, TwitchApiConfig config, TwitchRateLimiter twitchRateLimiter) {
         this.gson = gson;
-        Config config = Config.get();
-        this.twitchClientKey = config.getTwitchClientId();
-        this.twitchSecretKey = config.getTwitchClientSecret();
-        this.twitchRateLimiter = TwitchRateLimiter.get();
+        this.twitchClientKey = config.clientId;
+        this.twitchSecretKey = config.clientSecretId;
+        this.twitchRateLimiter = twitchRateLimiter;
         this.authRes = authRes;
     }
 

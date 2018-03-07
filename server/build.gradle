@@ -53,6 +53,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
         database() {
             name('org.jooq.util.mysql.MySQLDatabase')
             inputSchema('twitch')
+
         }
         target() {
             packageName('twitch.explorer.database.jooq.db')
