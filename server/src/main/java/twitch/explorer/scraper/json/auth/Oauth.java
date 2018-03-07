@@ -22,7 +22,7 @@ public class Oauth {
 
     private final long authTokenCreatedMillis = System.currentTimeMillis();
 
-    public boolean isTokenExperied() {
+    public boolean isTokenExpired() {
         final long currentMillis = System.currentTimeMillis();
         //Calculate number of seconds run and add 1 for some error of margin.
         final long elapsedSec = ((currentMillis - authTokenCreatedMillis) / 1000) + 1;

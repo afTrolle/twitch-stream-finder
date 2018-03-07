@@ -4,6 +4,7 @@
 package twitch.explorer.database.jooq.db.tables;
 
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
@@ -40,7 +40,7 @@ import twitch.explorer.database.jooq.db.tables.records.UserRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -2042381418;
+    private static final long serialVersionUID = 1590392586;
 
     /**
      * The reference instance of <code>twitch.user</code>
@@ -58,7 +58,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>twitch.user.user_id</code>.
      */
-    public final TableField<UserRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<UserRecord, Long> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>twitch.user.login</code>.
@@ -99,6 +99,11 @@ public class User extends TableImpl<UserRecord> {
      * The column <code>twitch.user.total_views</code>.
      */
     public final TableField<UserRecord, Integer> TOTAL_VIEWS = createField("total_views", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>twitch.user.updated</code>.
+     */
+    public final TableField<UserRecord, Timestamp> UPDATED = createField("updated", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
 
     /**
      * Create a <code>twitch.user</code> table reference
@@ -143,14 +148,6 @@ public class User extends TableImpl<UserRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.USER_BROADCASTERTYPE_ID_IDX, Indexes.USER_ID_IDX, Indexes.USER_ID_UNIQUE, Indexes.USER_PRIMARY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Identity<UserRecord, Integer> getIdentity() {
-        return Keys.IDENTITY_USER;
     }
 
     /**

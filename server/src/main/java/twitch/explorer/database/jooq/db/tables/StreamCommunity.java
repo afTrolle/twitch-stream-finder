@@ -38,7 +38,7 @@ import twitch.explorer.database.jooq.db.tables.records.StreamCommunityRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class StreamCommunity extends TableImpl<StreamCommunityRecord> {
 
-    private static final long serialVersionUID = -1164091461;
+    private static final long serialVersionUID = -509753674;
 
     /**
      * The reference instance of <code>twitch.stream_community</code>
@@ -105,7 +105,7 @@ public class StreamCommunity extends TableImpl<StreamCommunityRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.STREAM_COMMUNITY_COMMUNITY_ID_FK_IDX, Indexes.STREAM_COMMUNITY_FK_STREAM_COMMUNITY_STREAM_IDX);
+        return Arrays.<Index>asList(Indexes.STREAM_COMMUNITY_COMMUNITY_ID_FK_IDX);
     }
 
     /**
@@ -113,7 +113,7 @@ public class StreamCommunity extends TableImpl<StreamCommunityRecord> {
      */
     @Override
     public List<ForeignKey<StreamCommunityRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<StreamCommunityRecord, ?>>asList(Keys.FK_STREAM_COMMUNITY_STREAM, Keys.FK_STREAM_COMMUNITY_COMMUNITY);
+        return Arrays.<ForeignKey<StreamCommunityRecord, ?>>asList(Keys.FK_STREAM_COMMUNITY_COMMUNITY);
     }
 
     /**

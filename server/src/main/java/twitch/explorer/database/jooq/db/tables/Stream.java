@@ -40,7 +40,7 @@ import twitch.explorer.database.jooq.db.tables.records.StreamRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Stream extends TableImpl<StreamRecord> {
 
-    private static final long serialVersionUID = 1119531935;
+    private static final long serialVersionUID = 1912937547;
 
     /**
      * The reference instance of <code>twitch.stream</code>
@@ -58,7 +58,7 @@ public class Stream extends TableImpl<StreamRecord> {
     /**
      * The column <code>twitch.stream.stream_id</code>.
      */
-    public final TableField<StreamRecord, Double> STREAM_ID = createField("stream_id", org.jooq.impl.SQLDataType.DOUBLE.nullable(false), this, "");
+    public final TableField<StreamRecord, Long> STREAM_ID = createField("stream_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>twitch.stream.title</code>.
@@ -88,12 +88,12 @@ public class Stream extends TableImpl<StreamRecord> {
     /**
      * The column <code>twitch.stream.user_id</code>.
      */
-    public final TableField<StreamRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<StreamRecord, Long> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>twitch.stream.game_id</code>.
      */
-    public final TableField<StreamRecord, Integer> GAME_ID = createField("game_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<StreamRecord, Integer> GAME_ID = createField("game_id", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>twitch.stream.stream_type_id</code>.
@@ -147,7 +147,7 @@ public class Stream extends TableImpl<StreamRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.STREAM_GAME_ID_FK_IDX, Indexes.STREAM_LANGUAGE_ID_FK_IDX, Indexes.STREAM_PRIMARY, Indexes.STREAM_STREAM_ID_UNIQUE, Indexes.STREAM_STREAM_TYPE_ID_FK_IDX, Indexes.STREAM_USER_ID_FK_a7_IDX);
+        return Arrays.<Index>asList(Indexes.STREAM_GAME_ID_FK_IDX, Indexes.STREAM_LANGUAGE_ID_FK_IDX, Indexes.STREAM_PRIMARY, Indexes.STREAM_STREAM_ID_UNIQUE, Indexes.STREAM_STREAM_TYPE_ID_FK_IDX);
     }
 
     /**
@@ -171,7 +171,7 @@ public class Stream extends TableImpl<StreamRecord> {
      */
     @Override
     public List<ForeignKey<StreamRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<StreamRecord, ?>>asList(Keys.FK_STREAM_USER, Keys.FK_STREAM_GAME, Keys.FK_STREAM_STREAM_TYPE, Keys.FK_STREAM_LANGUAGE);
+        return Arrays.<ForeignKey<StreamRecord, ?>>asList(Keys.FK_STREAM_GAME, Keys.FK_STREAM_STREAM_TYPE, Keys.FK_STREAM_LANGUAGE);
     }
 
     /**

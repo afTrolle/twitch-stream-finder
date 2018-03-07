@@ -59,7 +59,6 @@ public class Keys {
     public static final Identity<GameRecord, Integer> IDENTITY_GAME = Identities0.IDENTITY_GAME;
     public static final Identity<LanguageRecord, Integer> IDENTITY_LANGUAGE = Identities0.IDENTITY_LANGUAGE;
     public static final Identity<StreamTypeRecord, Integer> IDENTITY_STREAM_TYPE = Identities0.IDENTITY_STREAM_TYPE;
-    public static final Identity<UserRecord, Integer> IDENTITY_USER = Identities0.IDENTITY_USER;
     public static final Identity<UserTypeRecord, Integer> IDENTITY_USER_TYPE = Identities0.IDENTITY_USER_TYPE;
 
     // -------------------------------------------------------------------------
@@ -90,22 +89,18 @@ public class Keys {
     public static final UniqueKey<UserTypeRecord> KEY_USER_TYPE_PRIMARY = UniqueKeys0.KEY_USER_TYPE_PRIMARY;
     public static final UniqueKey<UserTypeRecord> KEY_USER_TYPE_ID_UNIQUE = UniqueKeys0.KEY_USER_TYPE_ID_UNIQUE;
     public static final UniqueKey<UserTypeRecord> KEY_USER_TYPE_TYPE_UNIQUE = UniqueKeys0.KEY_USER_TYPE_TYPE_UNIQUE;
-    public static final UniqueKey<VoteRecord> KEY_VOTE_VOTE_PRIMARY_KEY = UniqueKeys0.KEY_VOTE_VOTE_PRIMARY_KEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<StreamRecord, UserRecord> FK_STREAM_USER = ForeignKeys0.FK_STREAM_USER;
     public static final ForeignKey<StreamRecord, GameRecord> FK_STREAM_GAME = ForeignKeys0.FK_STREAM_GAME;
     public static final ForeignKey<StreamRecord, StreamTypeRecord> FK_STREAM_STREAM_TYPE = ForeignKeys0.FK_STREAM_STREAM_TYPE;
     public static final ForeignKey<StreamRecord, LanguageRecord> FK_STREAM_LANGUAGE = ForeignKeys0.FK_STREAM_LANGUAGE;
-    public static final ForeignKey<StreamCommunityRecord, StreamRecord> FK_STREAM_COMMUNITY_STREAM = ForeignKeys0.FK_STREAM_COMMUNITY_STREAM;
     public static final ForeignKey<StreamCommunityRecord, CommunityRecord> FK_STREAM_COMMUNITY_COMMUNITY = ForeignKeys0.FK_STREAM_COMMUNITY_COMMUNITY;
     public static final ForeignKey<UserRecord, UserTypeRecord> FK_USER_USER_TYPE = ForeignKeys0.FK_USER_USER_TYPE;
     public static final ForeignKey<UserRecord, BroadcasterTypeRecord> FK_USER_BROADCASTER_TYPE = ForeignKeys0.FK_USER_BROADCASTER_TYPE;
     public static final ForeignKey<VoteRecord, ClientRecord> FK_VOTE_CLIENT = ForeignKeys0.FK_VOTE_CLIENT;
-    public static final ForeignKey<VoteRecord, UserRecord> FK_VOTE_USER = ForeignKeys0.FK_VOTE_USER;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -118,7 +113,6 @@ public class Keys {
         public static Identity<GameRecord, Integer> IDENTITY_GAME = Internal.createIdentity(Game.GAME, Game.GAME.GAME_ID);
         public static Identity<LanguageRecord, Integer> IDENTITY_LANGUAGE = Internal.createIdentity(Language.LANGUAGE, Language.LANGUAGE.LANGUAGE_ID);
         public static Identity<StreamTypeRecord, Integer> IDENTITY_STREAM_TYPE = Internal.createIdentity(StreamType.STREAM_TYPE, StreamType.STREAM_TYPE.STREAM_TYPE_ID);
-        public static Identity<UserRecord, Integer> IDENTITY_USER = Internal.createIdentity(User.USER, User.USER.USER_ID);
         public static Identity<UserTypeRecord, Integer> IDENTITY_USER_TYPE = Internal.createIdentity(UserType.USER_TYPE, UserType.USER_TYPE.USER_TYPE_ID);
     }
 
@@ -147,19 +141,15 @@ public class Keys {
         public static final UniqueKey<UserTypeRecord> KEY_USER_TYPE_PRIMARY = Internal.createUniqueKey(UserType.USER_TYPE, "KEY_user_type_PRIMARY", UserType.USER_TYPE.USER_TYPE_ID);
         public static final UniqueKey<UserTypeRecord> KEY_USER_TYPE_ID_UNIQUE = Internal.createUniqueKey(UserType.USER_TYPE, "KEY_user_type_id_UNIQUE", UserType.USER_TYPE.USER_TYPE_ID);
         public static final UniqueKey<UserTypeRecord> KEY_USER_TYPE_TYPE_UNIQUE = Internal.createUniqueKey(UserType.USER_TYPE, "KEY_user_type_type_UNIQUE", UserType.USER_TYPE.TYPE);
-        public static final UniqueKey<VoteRecord> KEY_VOTE_VOTE_PRIMARY_KEY = Internal.createUniqueKey(Vote.VOTE, "KEY_vote_vote_primary_key", Vote.VOTE.USER_ID, Vote.VOTE.CLIENT_ID);
     }
 
     private static class ForeignKeys0 {
-        public static final ForeignKey<StreamRecord, UserRecord> FK_STREAM_USER = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_USER_PRIMARY, Stream.STREAM, "fk_stream_user", Stream.STREAM.USER_ID);
         public static final ForeignKey<StreamRecord, GameRecord> FK_STREAM_GAME = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_GAME_PRIMARY, Stream.STREAM, "fk_stream_game", Stream.STREAM.GAME_ID);
         public static final ForeignKey<StreamRecord, StreamTypeRecord> FK_STREAM_STREAM_TYPE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_STREAM_TYPE_PRIMARY, Stream.STREAM, "fk_stream_stream_type", Stream.STREAM.STREAM_TYPE_ID);
         public static final ForeignKey<StreamRecord, LanguageRecord> FK_STREAM_LANGUAGE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_LANGUAGE_PRIMARY, Stream.STREAM, "fk_stream_language", Stream.STREAM.LANGUAGE_ID);
-        public static final ForeignKey<StreamCommunityRecord, StreamRecord> FK_STREAM_COMMUNITY_STREAM = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_STREAM_PRIMARY, StreamCommunity.STREAM_COMMUNITY, "fk_stream_community_stream", StreamCommunity.STREAM_COMMUNITY.STREAM_ID);
         public static final ForeignKey<StreamCommunityRecord, CommunityRecord> FK_STREAM_COMMUNITY_COMMUNITY = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_COMMUNITY_PRIMARY, StreamCommunity.STREAM_COMMUNITY, "fk_stream_community_community", StreamCommunity.STREAM_COMMUNITY.COMMUNITY_ID);
         public static final ForeignKey<UserRecord, UserTypeRecord> FK_USER_USER_TYPE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_USER_TYPE_PRIMARY, User.USER, "fk_user_user_type", User.USER.USER_TYPE_ID);
         public static final ForeignKey<UserRecord, BroadcasterTypeRecord> FK_USER_BROADCASTER_TYPE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_BROADCASTER_TYPE_PRIMARY, User.USER, "fk_user_broadcaster_type", User.USER.BROADCASTER_TYPE_ID);
         public static final ForeignKey<VoteRecord, ClientRecord> FK_VOTE_CLIENT = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_CLIENT_PRIMARY, Vote.VOTE, "fk_vote_client", Vote.VOTE.CLIENT_ID);
-        public static final ForeignKey<VoteRecord, UserRecord> FK_VOTE_USER = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_USER_PRIMARY, Vote.VOTE, "fk_vote_user", Vote.VOTE.USER_ID);
     }
 }

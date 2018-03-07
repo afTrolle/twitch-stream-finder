@@ -59,9 +59,7 @@ public class Indexes {
     public static final Index STREAM_PRIMARY = Indexes0.STREAM_PRIMARY;
     public static final Index STREAM_STREAM_ID_UNIQUE = Indexes0.STREAM_STREAM_ID_UNIQUE;
     public static final Index STREAM_STREAM_TYPE_ID_FK_IDX = Indexes0.STREAM_STREAM_TYPE_ID_FK_IDX;
-    public static final Index STREAM_USER_ID_FK_a7_IDX = Indexes0.STREAM_USER_ID_FK_a7_IDX;
     public static final Index STREAM_COMMUNITY_COMMUNITY_ID_FK_IDX = Indexes0.STREAM_COMMUNITY_COMMUNITY_ID_FK_IDX;
-    public static final Index STREAM_COMMUNITY_FK_STREAM_COMMUNITY_STREAM_IDX = Indexes0.STREAM_COMMUNITY_FK_STREAM_COMMUNITY_STREAM_IDX;
     public static final Index STREAM_TYPE_NAME_UNIQUE = Indexes0.STREAM_TYPE_NAME_UNIQUE;
     public static final Index STREAM_TYPE_PRIMARY = Indexes0.STREAM_TYPE_PRIMARY;
     public static final Index STREAM_TYPE_STREAM_TYPE_ID_UNIQUE = Indexes0.STREAM_TYPE_STREAM_TYPE_ID_UNIQUE;
@@ -74,7 +72,6 @@ public class Indexes {
     public static final Index USER_TYPE_TYPE_UNIQUE = Indexes0.USER_TYPE_TYPE_UNIQUE;
     public static final Index VOTE_FK_VOTE_CLIENT_IDX = Indexes0.VOTE_FK_VOTE_CLIENT_IDX;
     public static final Index VOTE_USER_ID_FK_IDX = Indexes0.VOTE_USER_ID_FK_IDX;
-    public static final Index VOTE_VOTE_PRIMARY_KEY = Indexes0.VOTE_VOTE_PRIMARY_KEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -100,9 +97,7 @@ public class Indexes {
         public static Index STREAM_PRIMARY = Internal.createIndex("PRIMARY", Stream.STREAM, new OrderField[] { Stream.STREAM.STREAM_ID }, true);
         public static Index STREAM_STREAM_ID_UNIQUE = Internal.createIndex("stream_id_UNIQUE", Stream.STREAM, new OrderField[] { Stream.STREAM.STREAM_ID }, true);
         public static Index STREAM_STREAM_TYPE_ID_FK_IDX = Internal.createIndex("stream_type_id_fk_idx", Stream.STREAM, new OrderField[] { Stream.STREAM.STREAM_TYPE_ID }, false);
-        public static Index STREAM_USER_ID_FK_a7_IDX = Internal.createIndex("user_id_fk§_idx", Stream.STREAM, new OrderField[] { Stream.STREAM.USER_ID }, false);
         public static Index STREAM_COMMUNITY_COMMUNITY_ID_FK_IDX = Internal.createIndex("community_id_fk_idx", StreamCommunity.STREAM_COMMUNITY, new OrderField[] { StreamCommunity.STREAM_COMMUNITY.COMMUNITY_ID }, false);
-        public static Index STREAM_COMMUNITY_FK_STREAM_COMMUNITY_STREAM_IDX = Internal.createIndex("fk_stream_community_stream_idx", StreamCommunity.STREAM_COMMUNITY, new OrderField[] { StreamCommunity.STREAM_COMMUNITY.STREAM_ID }, false);
         public static Index STREAM_TYPE_NAME_UNIQUE = Internal.createIndex("name_UNIQUE", StreamType.STREAM_TYPE, new OrderField[] { StreamType.STREAM_TYPE.NAME }, true);
         public static Index STREAM_TYPE_PRIMARY = Internal.createIndex("PRIMARY", StreamType.STREAM_TYPE, new OrderField[] { StreamType.STREAM_TYPE.STREAM_TYPE_ID }, true);
         public static Index STREAM_TYPE_STREAM_TYPE_ID_UNIQUE = Internal.createIndex("stream_type_id_UNIQUE", StreamType.STREAM_TYPE, new OrderField[] { StreamType.STREAM_TYPE.STREAM_TYPE_ID }, true);
@@ -115,6 +110,5 @@ public class Indexes {
         public static Index USER_TYPE_TYPE_UNIQUE = Internal.createIndex("type_UNIQUE", UserType.USER_TYPE, new OrderField[] { UserType.USER_TYPE.TYPE }, true);
         public static Index VOTE_FK_VOTE_CLIENT_IDX = Internal.createIndex("fk_vote_client_idx", Vote.VOTE, new OrderField[] { Vote.VOTE.CLIENT_ID }, false);
         public static Index VOTE_USER_ID_FK_IDX = Internal.createIndex("user_id_fk_idx", Vote.VOTE, new OrderField[] { Vote.VOTE.USER_ID }, false);
-        public static Index VOTE_VOTE_PRIMARY_KEY = Internal.createIndex("vote_primary_key", Vote.VOTE, new OrderField[] { Vote.VOTE.USER_ID, Vote.VOTE.CLIENT_ID }, true);
     }
 }

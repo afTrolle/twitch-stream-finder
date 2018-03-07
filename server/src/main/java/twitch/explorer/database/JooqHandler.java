@@ -6,17 +6,17 @@ import org.jooq.impl.DSL;
 import twitch.explorer.database.jooq.db.Tables;
 import twitch.explorer.database.jooq.db.tables.records.*;
 import twitch.explorer.scraper.json.games.Game;
+import twitch.explorer.scraper.json.stream.Stream;
 import twitch.explorer.settings.Config;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Collection;
+import java.util.HashSet;
 
+import static twitch.explorer.database.jooq.db.Tables.GAME;
 import static twitch.explorer.database.jooq.db.Tables.STREAM;
 import static twitch.explorer.database.jooq.db.Tables.USER;
 
@@ -26,11 +26,13 @@ public class JooqHandler {
     //Jooq MySql Connection
     private Connection conn;
     private DSLContext create;
+    private Config config;
 
     public JooqHandler() throws SQLException {
-        String userName = Config.getMySqlUserName();
-        String password = Config.getMySqlPassword();
-        String url = "jdbc:mysql://" + Config.getMySqlUrl();
+        config = Config.get();
+        String userName = config.getMySqlUserName();
+        String password = config.getMySqlPassword();
+        String url = "jdbc:mysql://" + config.getMySqlUrl();
 
         // Connection is the only JDBC resource that we need
         conn = DriverManager.getConnection(url, userName, password);
@@ -67,7 +69,7 @@ public class JooqHandler {
 
 
     public UserRecord getUser(String userId) {
-        return create.selectFrom(Tables.USER).where(Tables.USER.USER_ID.eq(Integer.parseInt(userId))).fetchOne();
+        return create.selectFrom(Tables.USER).where(Tables.USER.USER_ID.eq(Long.parseLong(userId))).fetchOne();
     }
 
     public boolean existsUser(String userId) {
@@ -131,14 +133,15 @@ public class JooqHandler {
         userRecord.setOfflineImage(userJson.offlineImageUrl);
         userRecord.setProfileImage(userJson.profileImageUrl);
         userRecord.setTotalViews(userJson.viewCount);
-        userRecord.setUserId(Integer.parseInt(userJson.id));
+        userRecord.setUserId(Long.parseLong(userJson.id));
         userRecord.setUserTypeId(userType.getUserTypeId());
+        userRecord.setUpdated(new Timestamp(System.currentTimeMillis()));
         userRecord.store();
         return userRecord;
     }
 
     public StreamRecord getStream(String id) {
-        return create.selectFrom(STREAM).where(STREAM.STREAM_ID.eq(Double.parseDouble(id))).fetchOne();
+        return create.selectFrom(STREAM).where(STREAM.STREAM_ID.eq(Long.parseLong(id))).fetchOne();
     }
 
     private final DateTimeFormatter dtf = DateTimeFormatter.ISO_INSTANT;
@@ -155,7 +158,7 @@ public class JooqHandler {
         Timestamp timestamp = Timestamp.from(Instant.from(creationAccessor));
 
         record.setStarted(timestamp);
-        record.setStreamId(Double.parseDouble(stream.id));
+        record.setStreamId(Long.parseLong(stream.id));
         record.setStreamTypeId(streamType.getStreamTypeId());
         record.setThumbnail(stream.thumbnailUrl);
         record.setTitle(stream.title);
@@ -164,7 +167,15 @@ public class JooqHandler {
         return record;
     }
 
-    public Result<Record1<Integer>> getListContainedIn(Collection<Integer> userId){
+    public Result<Record1<Long>> getListContainedIn(Collection<Long> userId) {
         return create.select(USER.USER_ID).from(USER).where(USER.USER_ID.in(userId)).fetch();
+    }
+
+    public Result<Record1<Integer>> getExistingGamesByIds(HashSet<Integer> liveGameIds) {
+        return create.select(GAME.GAME_ID).from(GAME).where(GAME.GAME_ID.in(liveGameIds)).fetch();
+    }
+
+    public Result<StreamRecord> getEndedStreams(HashSet<Long> streams) {
+        return create.selectFrom(STREAM).where(STREAM.ENDED.isNull().and(STREAM.STREAM_ID.notIn(streams))).fetch();
     }
 }

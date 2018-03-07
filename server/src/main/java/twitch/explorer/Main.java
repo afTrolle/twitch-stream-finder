@@ -10,16 +10,14 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) {
-        Config.init();
         try {
             JooqHandler jooqHandler = new JooqHandler();
             TwitchScrapper scrapper = new TwitchScrapper(jooqHandler);
             scrapper.start();
-        //    jooqHandler.createGame("hello","http://helloworld.com");
+        //  jooqHandler.createGame("hello","http://helloworld.com");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 
 }

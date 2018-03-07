@@ -3,6 +3,7 @@ package twitch.explorer.scraper.json.stream;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -39,4 +40,12 @@ public class Stream {
     @Expose
     public String thumbnailUrl;
 
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Stream) {
+            return id.equals(((Stream) obj).id);
+        }
+        return super.equals(obj);
+    }
 }

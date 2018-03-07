@@ -1,6 +1,5 @@
 package twitch.explorer.scraper;
 
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.jooq.Record1;
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
@@ -11,62 +10,111 @@ import twitch.explorer.scraper.json.stream.Stream;
 import twitch.explorer.scraper.json.stream.Streams;
 import twitch.explorer.scraper.json.users.User;
 import twitch.explorer.scraper.json.users.Users;
-import twitch.explorer.settings.Config;
+import twitch.explorer.utils.Printer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 public class TwitchScrapper {
 
     private final JooqHandler jooqHandler;
     private TwitchApiClient client;
     private boolean isScraping = true;
-    private Sleeper sleeper;
 
     public TwitchScrapper(JooqHandler jooqHandler) {
         this.jooqHandler = jooqHandler;
     }
 
     public void start() {
-        String twitchApiClient = Config.getTwitchClientId();
-        String twitchClientSecret = Config.getTwtichClientSecret();
 
-        client = new TwitchApiClient(twitchApiClient, twitchClientSecret);
+        client = new TwitchApiClient();
         isScraping = true;
 
-        sleeper = new Sleeper();
-        sleeper.setSleepInterval(!twitchClientSecret.isEmpty());
-
         new Thread(this::loopFunction).start();
-    }
-
-
-    public void stop() {
-        isScraping = false;
     }
 
 
     private void loopFunction() {
         try {
             while (isScraping) {
-                ArrayList<Stream> streamCollection = gatherAllStreams();
-                createMissingUsers(streamCollection);
-                createAndUpdateStream(streamCollection);
+                HashMap<String, Stream> liveStreams = gatherAllLiveStreams();
+                createMissingUsers(liveStreams);
+                createMissingGames(liveStreams);
+                createAndUpdateStream(liveStreams);
+                detectEndedStreams(liveStreams);
+                updateLiveUsers(liveStreams);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    private void updateLiveUsers(HashMap<String, Stream> liveStreams) {
 
-    private void createAndUpdateStream(ArrayList<Stream> streamCollection) throws InterruptedException {
+    }
 
-        for (Stream stream : streamCollection) {
+    private void createMissingGames(HashMap<String, Stream> liveStreams) {
+
+        HashSet<Integer> liveGameIds = new HashSet<>();
+        for (Stream stream : liveStreams.values()) {
+            String gameId = stream.gameId;
+            if (gameId != null && !gameId.isEmpty()) {
+                liveGameIds.add(Integer.parseInt(stream.gameId));
+            }
+        }
+
+        Result<Record1<Integer>> existingUserIds = jooqHandler.getExistingGamesByIds(liveGameIds);
+        for (Record1<Integer> record : existingUserIds) {
+            liveGameIds.remove(record.value1());
+        }
+
+        ArrayList<Integer> gameIds = new ArrayList<>(100);
+
+        for (Integer gameId : liveGameIds) {
+            gameIds.add(gameId);
+            if (gameIds.size() == 100) {
+                Games subSetGames = client.getGames(gameIds);
+                createGames(subSetGames.data);
+                gameIds.clear();
+            }
+        }
+
+        if (gameIds.size() > 0) {
+            Games subSetGames = client.getGames(gameIds);
+            createGames(subSetGames.data);
+        }
+    }
+
+    private void createGames(List<Game> data) {
+        for (Game game : data) {
+            jooqHandler.createGame(game);
+        }
+    }
+
+    private void detectEndedStreams(HashMap<String, Stream> streamCollection) {
+        Collection<Stream> streams = streamCollection.values();
+        HashSet<Long> streamIds = new HashSet<>(streams.size());
+        for (Stream stream : streams) {
+            streamIds.add(Long.parseLong(stream.id));
+        }
+        Result<StreamRecord> streamRecords = jooqHandler.getEndedStreams(streamIds);
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        for (StreamRecord streamRecord : streamRecords) {
+            streamRecord.setEnded(timestamp);
+            streamRecord.update();
+        }
+    }
+
+    private void createAndUpdateStream(HashMap<String, Stream> streamCollection) throws InterruptedException {
+
+        for (Stream stream : streamCollection.values()) {
             //  stream.gameId;
             GameRecord game = null;
             if (stream.gameId != null && !stream.gameId.isEmpty() && Integer.parseInt(stream.gameId) > 0) {
                 if ((game = jooqHandler.getGameById(stream.gameId)) == null) {
-                    game = jooqHandler.createGame(getGame(stream.gameId));
+                    // game = jooqHandler.createGame(client.getGame(stream.gameId));
                 }
             }
 
@@ -103,10 +151,10 @@ public class TwitchScrapper {
 
             StreamRecord streamRecord;
             if ((streamRecord = jooqHandler.getStream(stream.id)) == null) {
-                streamRecord = jooqHandler.createStream(game, lanugage, streamType, user, stream);
+                jooqHandler.createStream(game, lanugage, streamType, user, stream);
             } else {
                 // update stream entry
-                updateStream(streamRecord);
+                updateStream(streamRecord, game, lanugage, streamType, user, stream);
             }
 
         }
@@ -127,8 +175,27 @@ public class TwitchScrapper {
         user.getTotalViews();
     }
 
-    private void updateStream(StreamRecord streamRecord) {
+    private void updateStream(StreamRecord streamRecord, GameRecord game, LanguageRecord lanugage, StreamTypeRecord streamType, UserRecord user, Stream stream) {
 
+        if (streamRecord == null) {
+            System.out.println("No Stream record in UpdateStream");
+            return;
+        }
+
+        if (game != null && game.getGameId() > 0 && !game.getGameId().equals(streamRecord.getGameId()))
+            streamRecord.setGameId(game.getGameId());
+        if (!streamRecord.getLanguageId().equals(lanugage.getLanguageId()))
+            streamRecord.setLanguageId(lanugage.getLanguageId());
+        if (!streamRecord.getStreamTypeId().equals(streamType.getStreamTypeId()))
+            streamRecord.setStreamTypeId(streamType.getStreamTypeId());
+        if (!streamRecord.getTitle().equals(stream.title))
+            streamRecord.setTitle(stream.title);
+        if (!streamRecord.getThumbnail().equals(stream.thumbnailUrl))
+            streamRecord.setThumbnail(stream.thumbnailUrl);
+        if (streamRecord.getViewCount() != stream.viewerCount)
+            streamRecord.setViewCount(stream.viewerCount);
+
+        streamRecord.update();
     }
 
     private UserRecord createUser(User userJson) throws InterruptedException {
@@ -143,83 +210,60 @@ public class TwitchScrapper {
             broadcasterType = jooqHandler.createBroadcasterType(userJson.broadcasterType);
         }
 
-
         return jooqHandler.createUser(userJson, userType, broadcasterType);
     }
 
-    private twitch.explorer.scraper.json.users.User getUser(String userID) throws InterruptedException {
-        sleeper.sleep();
-        Users users = client.getUsers(gameHeader(userID));
-        return users.data.get(0);
-    }
 
-    private Game getGame(String gameId) throws InterruptedException {
-        sleeper.sleep();
-        Games games = client.getGames(gameHeader(gameId));
-        if (games.data.size() == 0) {
-            System.out.println("WTF");
-            return null;
-        }
-        return games.data.get(0);
-    }
-
-    private MultivaluedMapImpl gameHeader(String gameId) {
-        MultivaluedMapImpl map = new MultivaluedMapImpl();
-        map.add("id", gameId);
-        return map;
-    }
-
-    int counter = 0;
-
-    private ArrayList<Stream> gatherAllStreams() throws InterruptedException {
-        ArrayList<Stream> streamsCollection = new ArrayList<>();
-        ArrayList<Integer> missingUsers = new ArrayList<>();
+    private HashMap<String, Stream> gatherAllLiveStreams() throws InterruptedException {
+        //Assuming at-least 25k live streamers
+        HashMap<String, Stream> streamHashMap = new HashMap<>(25000);
         String streamCursor = null;
 
         while (true) {
-            sleeper.sleep();
             Streams twitchStreams = client.getHundredStreamsByCursor(streamCursor);
-            streamsCollection.addAll(twitchStreams.data);
-            streamCursor = twitchStreams.pagination.cursor;
 
-            if (counter == 4) {
-                counter = 0;
-                streamCursor = null;
-                return streamsCollection;
-            } else {
-                counter++;
+            //duplicates can be received. so check before adding it to collection.
+            for (Stream stream : twitchStreams.data) {
+                streamHashMap.putIfAbsent(stream.id, stream);
             }
 
-            //TODO Remove
+            Printer.setNumberOfStreamsIndex(streamHashMap.size());
+
+            streamCursor = twitchStreams.pagination.cursor;
             if (streamCursor == null || streamCursor.isEmpty()) {
-                return streamsCollection;
+                return streamHashMap;
             }
         }
     }
 
-    private void createMissingUsers(ArrayList<Stream> streamCollection) throws InterruptedException {
+    private void createMissingUsers(HashMap<String, Stream> streamCollection) throws InterruptedException {
 
-        //get users remove duplicates
-        ArrayList<Integer> userCollection = new ArrayList<>(streamCollection.size());
-        for (Stream stream : streamCollection) {
-            if (!userCollection.contains(Integer.parseInt(stream.userId)))
-                userCollection.add(Integer.parseInt(stream.userId));
+        //get live streaming userIDs as integer
+        HashSet<Long> liveUserIds = new HashSet<>(streamCollection.size());
+        for (Stream stream : streamCollection.values()) {
+            liveUserIds.add(Long.parseLong(stream.userId));
         }
 
-        //remove existing users
-        Result<Record1<Integer>> listContainedIn = jooqHandler.getListContainedIn(userCollection);
-        for (Record1<Integer> integerRecord1 : listContainedIn) {
-            userCollection.remove(integerRecord1.value1());
+        //get existing users from DB using live users list
+        Result<Record1<Long>> existingUserIds = jooqHandler.getListContainedIn(liveUserIds);
+        for (Record1<Long> record : existingUserIds) {
+            //remove existing user
+            liveUserIds.remove(record.value1());
         }
 
-        while (userCollection.size() > 0) {
-            ArrayList<Integer> userIds = new ArrayList<>();
-            int numbersToFetch = userCollection.size() > 100 ? 100 : userCollection.size();
 
-            for (int i = 0; i < numbersToFetch; i++) {
-                userIds.add(userCollection.remove(0));
+        ArrayList<Long> userIds = new ArrayList<>(100);
+
+        for (Long userId : liveUserIds) {
+            userIds.add(userId);
+            if (userIds.size() == 100) {
+                Users subSetJsonUsers = client.getUsers(userIds);
+                createUsers(subSetJsonUsers.data);
+                userIds.clear();
             }
-            sleeper.sleep();
+        }
+
+        if (userIds.size() > 0) {
             Users subSetJsonUsers = client.getUsers(userIds);
             createUsers(subSetJsonUsers.data);
         }

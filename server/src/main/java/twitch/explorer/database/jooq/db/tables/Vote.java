@@ -16,7 +16,6 @@ import org.jooq.Name;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -40,7 +39,7 @@ import twitch.explorer.database.jooq.db.tables.records.VoteRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Vote extends TableImpl<VoteRecord> {
 
-    private static final long serialVersionUID = 84089264;
+    private static final long serialVersionUID = -1835969336;
 
     /**
      * The reference instance of <code>twitch.vote</code>
@@ -112,15 +111,7 @@ public class Vote extends TableImpl<VoteRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.VOTE_FK_VOTE_CLIENT_IDX, Indexes.VOTE_USER_ID_FK_IDX, Indexes.VOTE_VOTE_PRIMARY_KEY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<UniqueKey<VoteRecord>> getKeys() {
-        return Arrays.<UniqueKey<VoteRecord>>asList(Keys.KEY_VOTE_VOTE_PRIMARY_KEY);
+        return Arrays.<Index>asList(Indexes.VOTE_FK_VOTE_CLIENT_IDX, Indexes.VOTE_USER_ID_FK_IDX);
     }
 
     /**
@@ -128,7 +119,7 @@ public class Vote extends TableImpl<VoteRecord> {
      */
     @Override
     public List<ForeignKey<VoteRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<VoteRecord, ?>>asList(Keys.FK_VOTE_CLIENT, Keys.FK_VOTE_USER);
+        return Arrays.<ForeignKey<VoteRecord, ?>>asList(Keys.FK_VOTE_CLIENT);
     }
 
     /**
