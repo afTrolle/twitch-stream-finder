@@ -5,6 +5,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import twitch.explorer.database.jooq.db.Tables;
 import twitch.explorer.database.jooq.db.tables.records.*;
+import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
 import twitch.explorer.settings.Config;
 
@@ -12,12 +13,11 @@ import java.sql.*;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import static twitch.explorer.database.jooq.db.Tables.GAME;
-import static twitch.explorer.database.jooq.db.Tables.STREAM;
-import static twitch.explorer.database.jooq.db.Tables.USER;
+import static twitch.explorer.database.jooq.db.Tables.*;
 
 
 public class JooqHandler {
@@ -45,7 +45,7 @@ public class JooqHandler {
         }
     }
 
-    public GameRecord createGame(int gameId, String name, String artUrl) {
+    private synchronized GameRecord createGame(int gameId, String name, String artUrl) {
         GameRecord record = create.newRecord(Tables.GAME);
         record.setGameId(gameId);
         record.setName(name);
@@ -54,76 +54,67 @@ public class JooqHandler {
         return record;
     }
 
-    public GameRecord getGameById(String gameId) {
+    public synchronized GameRecord getGameById(String gameId) {
         return create.selectFrom(Tables.GAME).where(Tables.GAME.GAME_ID.eq(Integer.parseInt(gameId))).fetchOne();
     }
 
-    public boolean existsCommunity(String community) {
-        return false;
-    }
-
-    public boolean existsStreamType(String streamType) {
-        return false;
-    }
-
-
-    public UserRecord getUser(String userId) {
+    public synchronized UserRecord getUser(String userId) {
         return create.selectFrom(Tables.USER).where(Tables.USER.USER_ID.eq(Long.parseLong(userId))).fetchOne();
     }
 
-    public boolean existsUser(String userId) {
+    public synchronized boolean existsUser(String userId) {
         return false;
     }
 
-    public LanguageRecord getLanguage(String language) {
+    public synchronized LanguageRecord getLanguage(String language) {
         return create.selectFrom(Tables.LANGUAGE).where(Tables.LANGUAGE.NAME.eq(language)).fetchOne();
     }
 
-    public LanguageRecord createLanguage(String language) {
+    public synchronized LanguageRecord createLanguage(String language) {
         LanguageRecord record = create.newRecord(Tables.LANGUAGE);
         record.setName(language);
         record.store();
         return record;
     }
 
-    public StreamTypeRecord getStreamType(String type) {
+    public synchronized StreamTypeRecord getStreamType(String type) {
         return create.selectFrom(Tables.STREAM_TYPE).where(Tables.STREAM_TYPE.NAME.eq(type)).fetchOne();
     }
 
-    public GameRecord createGame(Game game) {
+    public synchronized GameRecord createGame(Game game) {
         return createGame(Integer.parseInt(game.id), game.name, game.boxArtUrl);
     }
 
-    public StreamTypeRecord createStreamType(String type) {
+    public synchronized StreamTypeRecord createStreamType(String type) {
         StreamTypeRecord record = create.newRecord(Tables.STREAM_TYPE);
         record.setName(type);
         record.store();
         return record;
     }
 
-    public UserTypeRecord getUserType(String type) {
+    public synchronized UserTypeRecord getUserType(String type) {
         return create.selectFrom(Tables.USER_TYPE).where(Tables.USER_TYPE.TYPE.eq(type)).fetchOne();
     }
 
-    public UserTypeRecord createUserType(String type) {
+    public synchronized UserTypeRecord createUserType(String type) {
         UserTypeRecord userTypeRecord = create.newRecord(Tables.USER_TYPE);
         userTypeRecord.setType(type);
         userTypeRecord.store();
         return userTypeRecord;
     }
 
-    public BroadcasterTypeRecord getBroadcasterType(String broadcasterType) {
+    public synchronized BroadcasterTypeRecord getBroadcasterType(String broadcasterType) {
         return create.selectFrom(Tables.BROADCASTER_TYPE).where(Tables.BROADCASTER_TYPE.TYPE.eq(broadcasterType)).fetchOne();
     }
 
-    public BroadcasterTypeRecord createBroadcasterType(String broadcasterType) {
+    public synchronized BroadcasterTypeRecord createBroadcasterType(String broadcasterType) {
         BroadcasterTypeRecord record = create.newRecord(Tables.BROADCASTER_TYPE);
         record.setType(broadcasterType);
         record.store();
         return record;
     }
 
-    public UserRecord createUser(twitch.explorer.scraper.twitchApi.json.users.User userJson, UserTypeRecord userType, BroadcasterTypeRecord broadcasterType) {
+    public synchronized UserRecord createUser(twitch.explorer.scraper.twitchApi.json.users.User userJson, UserTypeRecord userType, BroadcasterTypeRecord broadcasterType) {
         UserRecord userRecord = create.newRecord(Tables.USER);
         userRecord.setBroadcasterTypeId(broadcasterType.getBroadcasterTypeId());
         userRecord.setDescription(userJson.description);
@@ -139,13 +130,13 @@ public class JooqHandler {
         return userRecord;
     }
 
-    public StreamRecord getStream(String id) {
+    public synchronized StreamRecord getStream(String id) {
         return create.selectFrom(STREAM).where(STREAM.STREAM_ID.eq(Long.parseLong(id))).fetchOne();
     }
 
     private final DateTimeFormatter dtf = DateTimeFormatter.ISO_INSTANT;
 
-    public StreamRecord createStream(GameRecord game, LanguageRecord language, StreamTypeRecord streamType, UserRecord user, twitch.explorer.scraper.twitchApi.json.stream.Stream stream) {
+    public synchronized StreamRecord createStream(GameRecord game, LanguageRecord language, StreamTypeRecord streamType, UserRecord user, twitch.explorer.scraper.twitchApi.json.stream.Stream stream) {
         StreamRecord record = create.newRecord(STREAM);
         record.setViewCount(stream.viewerCount);
         // record.setEnded();
@@ -166,15 +157,47 @@ public class JooqHandler {
         return record;
     }
 
-    public Result<Record1<Long>> getListContainedIn(Collection<Long> userId) {
+    public synchronized Result<Record1<Long>> getListContainedIn(Collection<Long> userId) {
+        //create.insertInto(USER).values().execute();
         return create.select(USER.USER_ID).from(USER).where(USER.USER_ID.in(userId)).fetch();
     }
 
-    public Result<Record1<Integer>> getExistingGamesByIds(HashSet<Integer> liveGameIds) {
+    public synchronized Result<Record1<Integer>> getExistingGamesByIds(HashSet<Integer> liveGameIds) {
         return create.select(GAME.GAME_ID).from(GAME).where(GAME.GAME_ID.in(liveGameIds)).fetch();
     }
 
-    public Result<StreamRecord> getEndedStreams(HashSet<Long> streams) {
+    public synchronized Result<StreamRecord> getEndedStreams(HashSet<Long> streams) {
         return create.selectFrom(STREAM).where(STREAM.ENDED.isNull().and(STREAM.STREAM_ID.notIn(streams))).fetch();
+    }
+
+    public synchronized void getUsersThatAreLive() {
+        // create.selectFrom(STREAM).where(STREAM.ENDED.isNull());
+        create.select().from(STREAM).leftJoin(FOLLOWERS).using(STREAM.USER_ID).where(STREAM.ENDED.isNull());
+    }
+
+    public synchronized void createFollower(int amountOfFollowers, Long userId, Timestamp timestamp) {
+        FollowersRecord record = create.newRecord(FOLLOWERS);
+        record.setFetched(timestamp);
+        record.setUserId(userId);
+        record.setFollowers(amountOfFollowers);
+        record.store();
+    }
+
+    public synchronized Result<LiveLongestTimeSinceFollowerUpdateViewRecord> getLongestTimeSinceFollowers() {
+        return create.selectFrom(LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW).fetch();
+    }
+
+    public void createFollowers(ArrayList<Follows> follows) {
+        ArrayList<FollowersRecord> followersRecords = new ArrayList<>(follows.size());
+        for (Follows follow : follows) {
+            FollowersRecord followersRecord = new FollowersRecord();
+            followersRecord.setFetched(new Timestamp(System.currentTimeMillis()));
+            followersRecord.setUserId(follow.userID);
+            followersRecord.setFollowers(follow.total);
+            followersRecords.add(followersRecord);
+        }
+        synchronized (this) {
+            create.batchInsert(followersRecords).execute();
+        }
     }
 }

@@ -49,6 +49,7 @@ public class Indexes {
     public static final Index COMMUNITY_NAME_UNIQUE = Indexes0.COMMUNITY_NAME_UNIQUE;
     public static final Index COMMUNITY_PRIMARY = Indexes0.COMMUNITY_PRIMARY;
     public static final Index FOLLOWERS_FK_FOLLOWERS_USER_IDX = Indexes0.FOLLOWERS_FK_FOLLOWERS_USER_IDX;
+    public static final Index FOLLOWERS_PRIMARY = Indexes0.FOLLOWERS_PRIMARY;
     public static final Index GAME_ART_URL_UNIQUE = Indexes0.GAME_ART_URL_UNIQUE;
     public static final Index GAME_ID_UNIQUE = Indexes0.GAME_ID_UNIQUE;
     public static final Index GAME_NAME_UNIQUE = Indexes0.GAME_NAME_UNIQUE;
@@ -56,6 +57,7 @@ public class Indexes {
     public static final Index LANGUAGE_LANGUAGE_ID_UNIQUE = Indexes0.LANGUAGE_LANGUAGE_ID_UNIQUE;
     public static final Index LANGUAGE_NAME_UNIQUE = Indexes0.LANGUAGE_NAME_UNIQUE;
     public static final Index LANGUAGE_PRIMARY = Indexes0.LANGUAGE_PRIMARY;
+    public static final Index STREAM_FK_STREAM_USER_IDX = Indexes0.STREAM_FK_STREAM_USER_IDX;
     public static final Index STREAM_GAME_ID_FK_IDX = Indexes0.STREAM_GAME_ID_FK_IDX;
     public static final Index STREAM_LANGUAGE_ID_FK_IDX = Indexes0.STREAM_LANGUAGE_ID_FK_IDX;
     public static final Index STREAM_PRIMARY = Indexes0.STREAM_PRIMARY;
@@ -88,6 +90,7 @@ public class Indexes {
         public static Index COMMUNITY_NAME_UNIQUE = Internal.createIndex("name_UNIQUE", Community.COMMUNITY, new OrderField[] { Community.COMMUNITY.NAME }, true);
         public static Index COMMUNITY_PRIMARY = Internal.createIndex("PRIMARY", Community.COMMUNITY, new OrderField[] { Community.COMMUNITY.COMMUNITY_ID }, true);
         public static Index FOLLOWERS_FK_FOLLOWERS_USER_IDX = Internal.createIndex("fk_followers_user_idx", Followers.FOLLOWERS, new OrderField[] { Followers.FOLLOWERS.USER_ID }, false);
+        public static Index FOLLOWERS_PRIMARY = Internal.createIndex("PRIMARY", Followers.FOLLOWERS, new OrderField[] { Followers.FOLLOWERS.FOLLOWERS_ID }, true);
         public static Index GAME_ART_URL_UNIQUE = Internal.createIndex("art_url_UNIQUE", Game.GAME, new OrderField[] { Game.GAME.ART_URL }, true);
         public static Index GAME_ID_UNIQUE = Internal.createIndex("id_UNIQUE", Game.GAME, new OrderField[] { Game.GAME.GAME_ID }, true);
         public static Index GAME_NAME_UNIQUE = Internal.createIndex("name_UNIQUE", Game.GAME, new OrderField[] { Game.GAME.NAME }, true);
@@ -95,6 +98,7 @@ public class Indexes {
         public static Index LANGUAGE_LANGUAGE_ID_UNIQUE = Internal.createIndex("language_id_UNIQUE", Language.LANGUAGE, new OrderField[] { Language.LANGUAGE.LANGUAGE_ID }, true);
         public static Index LANGUAGE_NAME_UNIQUE = Internal.createIndex("name_UNIQUE", Language.LANGUAGE, new OrderField[] { Language.LANGUAGE.NAME }, true);
         public static Index LANGUAGE_PRIMARY = Internal.createIndex("PRIMARY", Language.LANGUAGE, new OrderField[] { Language.LANGUAGE.LANGUAGE_ID }, true);
+        public static Index STREAM_FK_STREAM_USER_IDX = Internal.createIndex("fk_stream_user_idx", Stream.STREAM, new OrderField[] { Stream.STREAM.USER_ID }, false);
         public static Index STREAM_GAME_ID_FK_IDX = Internal.createIndex("game_id_fk_idx", Stream.STREAM, new OrderField[] { Stream.STREAM.GAME_ID }, false);
         public static Index STREAM_LANGUAGE_ID_FK_IDX = Internal.createIndex("language_id_fk_idx", Stream.STREAM, new OrderField[] { Stream.STREAM.LANGUAGE_ID }, false);
         public static Index STREAM_PRIMARY = Internal.createIndex("PRIMARY", Stream.STREAM, new OrderField[] { Stream.STREAM.STREAM_ID }, true);

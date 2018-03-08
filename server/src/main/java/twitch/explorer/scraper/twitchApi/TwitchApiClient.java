@@ -5,6 +5,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
 import twitch.explorer.scraper.twitchApi.json.games.Games;
 import twitch.explorer.scraper.twitchApi.json.stream.Streams;
@@ -25,6 +26,7 @@ public class TwitchApiClient {
     private final WebResource gamesRes;
     private final WebResource streamsRes;
     private final WebResource usersRes;
+    private final WebResource followRes;
 
     private final TwitchRateLimiter twitchRateLimiter;
 
@@ -39,6 +41,7 @@ public class TwitchApiClient {
         gamesRes = rootRes.path("games");
         streamsRes = rootRes.path("streams");
         usersRes = rootRes.path("users");
+        followRes = usersRes.path("follows");
 
         // set print for jersey for debugging.
         // client.addFilter(new LoggingFilter(System.out));
@@ -68,10 +71,19 @@ public class TwitchApiClient {
     /**
      * Perform get on webResource return with type of class
      */
-    private <T> T get(WebResource resource, Class<T> classOfT) {
+    private <T> T get(WebResource resource, Class<T> classOfT) throws UniformInterfaceException {
         WebResource.Builder webResource = apiAuth.auth(resource);
         twitchRateLimiter.sleep();
-        String jsonResponse = webResource.get(String.class);
+        String jsonResponse = null;
+        try {
+            jsonResponse = webResource.get(String.class);
+        } catch (UniformInterfaceException e) {
+            if (e.getResponse().getStatus() == TwitchStatusCodes.ServiceUnavailable) {
+                jsonResponse = apiAuth.auth(resource).get(String.class);
+            } else {
+                throw (e);
+            }
+        }
         return gson.fromJson(jsonResponse, classOfT);
     }
 
@@ -84,7 +96,6 @@ public class TwitchApiClient {
         WebResource resource = (queryParams == null ? usersRes : usersRes.queryParams(queryParams));
         return get(resource, Users.class);
     }
-
 
     public Games getGames(ArrayList<Integer> gameIds) {
         WebResource resource = gamesRes.queryParams(addIdsHeader(gameIds));
@@ -105,7 +116,7 @@ public class TwitchApiClient {
         return getUsers(map);
     }
 
-    public Streams getHundredStreamsByCursor(String streamCursor) {
+    public Streams getHundredStreamsByCursor(String streamCursor) throws UniformInterfaceException {
         MultivaluedMapImpl map = new MultivaluedMapImpl();
         if (streamCursor != null && !streamCursor.isEmpty())
             map.add("after", streamCursor);
@@ -114,4 +125,11 @@ public class TwitchApiClient {
     }
 
 
+    public Follows getAmountOfFollowers(Long streamId) {
+        MultivaluedMapImpl map = new MultivaluedMapImpl();
+        map.add("from_id", streamId);
+        map.add("first", "1");
+        WebResource resource = followRes.queryParams(map);
+        return get(resource, Follows.class);
+    }
 }

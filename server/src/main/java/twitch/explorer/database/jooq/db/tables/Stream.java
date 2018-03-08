@@ -40,7 +40,7 @@ import twitch.explorer.database.jooq.db.tables.records.StreamRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Stream extends TableImpl<StreamRecord> {
 
-    private static final long serialVersionUID = 1912937547;
+    private static final long serialVersionUID = -696016224;
 
     /**
      * The reference instance of <code>twitch.stream</code>
@@ -147,7 +147,7 @@ public class Stream extends TableImpl<StreamRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.STREAM_GAME_ID_FK_IDX, Indexes.STREAM_LANGUAGE_ID_FK_IDX, Indexes.STREAM_PRIMARY, Indexes.STREAM_STREAM_ID_UNIQUE, Indexes.STREAM_STREAM_TYPE_ID_FK_IDX);
+        return Arrays.<Index>asList(Indexes.STREAM_FK_STREAM_USER_IDX, Indexes.STREAM_GAME_ID_FK_IDX, Indexes.STREAM_LANGUAGE_ID_FK_IDX, Indexes.STREAM_PRIMARY, Indexes.STREAM_STREAM_ID_UNIQUE, Indexes.STREAM_STREAM_TYPE_ID_FK_IDX);
     }
 
     /**
@@ -171,7 +171,7 @@ public class Stream extends TableImpl<StreamRecord> {
      */
     @Override
     public List<ForeignKey<StreamRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<StreamRecord, ?>>asList(Keys.FK_STREAM_GAME, Keys.FK_STREAM_STREAM_TYPE, Keys.FK_STREAM_LANGUAGE);
+        return Arrays.<ForeignKey<StreamRecord, ?>>asList(Keys.FK_STREAM_USER, Keys.FK_STREAM_GAME, Keys.FK_STREAM_STREAM_TYPE, Keys.FK_STREAM_LANGUAGE);
     }
 
     /**

@@ -20,6 +20,10 @@ import twitch.explorer.database.jooq.db.tables.Community;
 import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
 import twitch.explorer.database.jooq.db.tables.Language;
+import twitch.explorer.database.jooq.db.tables.LatestFollowersUpdateView;
+import twitch.explorer.database.jooq.db.tables.LiveLongestTimeSinceFollowerUpdateView;
+import twitch.explorer.database.jooq.db.tables.LiveStreamsView;
+import twitch.explorer.database.jooq.db.tables.NewView;
 import twitch.explorer.database.jooq.db.tables.Stream;
 import twitch.explorer.database.jooq.db.tables.StreamCommunity;
 import twitch.explorer.database.jooq.db.tables.StreamType;
@@ -41,7 +45,7 @@ import twitch.explorer.database.jooq.db.tables.Vote;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Twitch extends SchemaImpl {
 
-    private static final long serialVersionUID = 856160126;
+    private static final long serialVersionUID = -534303940;
 
     /**
      * The reference instance of <code>twitch</code>
@@ -78,6 +82,26 @@ User’s broadcaster type: "partner", "affiliate", or "".
      * The table <code>twitch.language</code>.
      */
     public final Language LANGUAGE = twitch.explorer.database.jooq.db.tables.Language.LANGUAGE;
+
+    /**
+     * VIEW
+     */
+    public final LatestFollowersUpdateView LATEST_FOLLOWERS_UPDATE_VIEW = twitch.explorer.database.jooq.db.tables.LatestFollowersUpdateView.LATEST_FOLLOWERS_UPDATE_VIEW;
+
+    /**
+     * VIEW
+     */
+    public final LiveLongestTimeSinceFollowerUpdateView LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW = twitch.explorer.database.jooq.db.tables.LiveLongestTimeSinceFollowerUpdateView.LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW;
+
+    /**
+     * VIEW
+     */
+    public final LiveStreamsView LIVE_STREAMS_VIEW = twitch.explorer.database.jooq.db.tables.LiveStreamsView.LIVE_STREAMS_VIEW;
+
+    /**
+     * VIEW
+     */
+    public final NewView NEW_VIEW = twitch.explorer.database.jooq.db.tables.NewView.NEW_VIEW;
 
     /**
      * The table <code>twitch.stream</code>.
@@ -140,6 +164,10 @@ User’s broadcaster type: "partner", "affiliate", or "".
             Followers.FOLLOWERS,
             Game.GAME,
             Language.LANGUAGE,
+            LatestFollowersUpdateView.LATEST_FOLLOWERS_UPDATE_VIEW,
+            LiveLongestTimeSinceFollowerUpdateView.LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW,
+            LiveStreamsView.LIVE_STREAMS_VIEW,
+            NewView.NEW_VIEW,
             Stream.STREAM,
             StreamCommunity.STREAM_COMMUNITY,
             StreamType.STREAM_TYPE,

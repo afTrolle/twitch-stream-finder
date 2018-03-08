@@ -3,8 +3,10 @@ package twitch.explorer.scraper;
 import org.jooq.Record1;
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
+import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.records.*;
 import twitch.explorer.scraper.twitchApi.TwitchApiConfig;
+import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
 import twitch.explorer.scraper.twitchApi.json.games.Games;
 import twitch.explorer.scraper.twitchApi.json.stream.Stream;
@@ -47,6 +49,24 @@ public class TwitchScrapper {
 
     private void fetchFollowers() {
 
+        //will fetch 240 everytime.
+        ArrayList<Follows> follows = new ArrayList<>(240);
+        while (isScraping) {
+
+            Result<LiveLongestTimeSinceFollowerUpdateViewRecord> sinceUpdateFollowers = jooqHandler.getLongestTimeSinceFollowers();
+
+            for (int i = 0; i < sinceUpdateFollowers.size(); i++) {
+                LiveLongestTimeSinceFollowerUpdateViewRecord liveStream = sinceUpdateFollowers.get(i);
+                Long userId = liveStream.getUserId();
+                Follows fetchedFollowers = followerClient.getAmountOfFollowers(userId);
+                fetchedFollowers.userID = liveStream.getUserId();
+                follows.add(fetchedFollowers);
+            }
+
+            //TODO update DB
+            jooqHandler.createFollowers(follows);
+            follows.clear();
+        }
     }
 
 
@@ -192,7 +212,8 @@ public class TwitchScrapper {
         user.getTotalViews();
     }
 
-    private void updateStream(StreamRecord streamRecord, GameRecord game, LanguageRecord lanugage, StreamTypeRecord streamType, UserRecord user, Stream stream) {
+    private void updateStream(StreamRecord streamRecord, GameRecord game, LanguageRecord lanugage, StreamTypeRecord
+            streamType, UserRecord user, Stream stream) {
 
         if (streamRecord == null) {
             System.out.println("No Stream record in UpdateStream");

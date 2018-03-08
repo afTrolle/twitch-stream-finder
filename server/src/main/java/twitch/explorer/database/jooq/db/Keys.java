@@ -58,6 +58,7 @@ public class Keys {
     public static final Identity<BroadcasterTypeRecord, Integer> IDENTITY_BROADCASTER_TYPE = Identities0.IDENTITY_BROADCASTER_TYPE;
     public static final Identity<ClientRecord, Integer> IDENTITY_CLIENT = Identities0.IDENTITY_CLIENT;
     public static final Identity<CommunityRecord, Integer> IDENTITY_COMMUNITY = Identities0.IDENTITY_COMMUNITY;
+    public static final Identity<FollowersRecord, Integer> IDENTITY_FOLLOWERS = Identities0.IDENTITY_FOLLOWERS;
     public static final Identity<GameRecord, Integer> IDENTITY_GAME = Identities0.IDENTITY_GAME;
     public static final Identity<LanguageRecord, Integer> IDENTITY_LANGUAGE = Identities0.IDENTITY_LANGUAGE;
     public static final Identity<StreamTypeRecord, Integer> IDENTITY_STREAM_TYPE = Identities0.IDENTITY_STREAM_TYPE;
@@ -74,6 +75,7 @@ public class Keys {
     public static final UniqueKey<ClientRecord> KEY_CLIENT_ID_UNIQUE = UniqueKeys0.KEY_CLIENT_ID_UNIQUE;
     public static final UniqueKey<CommunityRecord> KEY_COMMUNITY_PRIMARY = UniqueKeys0.KEY_COMMUNITY_PRIMARY;
     public static final UniqueKey<CommunityRecord> KEY_COMMUNITY_NAME_UNIQUE = UniqueKeys0.KEY_COMMUNITY_NAME_UNIQUE;
+    public static final UniqueKey<FollowersRecord> KEY_FOLLOWERS_PRIMARY = UniqueKeys0.KEY_FOLLOWERS_PRIMARY;
     public static final UniqueKey<GameRecord> KEY_GAME_PRIMARY = UniqueKeys0.KEY_GAME_PRIMARY;
     public static final UniqueKey<GameRecord> KEY_GAME_ID_UNIQUE = UniqueKeys0.KEY_GAME_ID_UNIQUE;
     public static final UniqueKey<GameRecord> KEY_GAME_NAME_UNIQUE = UniqueKeys0.KEY_GAME_NAME_UNIQUE;
@@ -97,6 +99,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<FollowersRecord, UserRecord> FK_FOLLOWERS_USER = ForeignKeys0.FK_FOLLOWERS_USER;
+    public static final ForeignKey<StreamRecord, UserRecord> FK_STREAM_USER = ForeignKeys0.FK_STREAM_USER;
     public static final ForeignKey<StreamRecord, GameRecord> FK_STREAM_GAME = ForeignKeys0.FK_STREAM_GAME;
     public static final ForeignKey<StreamRecord, StreamTypeRecord> FK_STREAM_STREAM_TYPE = ForeignKeys0.FK_STREAM_STREAM_TYPE;
     public static final ForeignKey<StreamRecord, LanguageRecord> FK_STREAM_LANGUAGE = ForeignKeys0.FK_STREAM_LANGUAGE;
@@ -113,6 +116,7 @@ public class Keys {
         public static Identity<BroadcasterTypeRecord, Integer> IDENTITY_BROADCASTER_TYPE = Internal.createIdentity(BroadcasterType.BROADCASTER_TYPE, BroadcasterType.BROADCASTER_TYPE.BROADCASTER_TYPE_ID);
         public static Identity<ClientRecord, Integer> IDENTITY_CLIENT = Internal.createIdentity(Client.CLIENT, Client.CLIENT.CLIENT_ID);
         public static Identity<CommunityRecord, Integer> IDENTITY_COMMUNITY = Internal.createIdentity(Community.COMMUNITY, Community.COMMUNITY.COMMUNITY_ID);
+        public static Identity<FollowersRecord, Integer> IDENTITY_FOLLOWERS = Internal.createIdentity(Followers.FOLLOWERS, Followers.FOLLOWERS.FOLLOWERS_ID);
         public static Identity<GameRecord, Integer> IDENTITY_GAME = Internal.createIdentity(Game.GAME, Game.GAME.GAME_ID);
         public static Identity<LanguageRecord, Integer> IDENTITY_LANGUAGE = Internal.createIdentity(Language.LANGUAGE, Language.LANGUAGE.LANGUAGE_ID);
         public static Identity<StreamTypeRecord, Integer> IDENTITY_STREAM_TYPE = Internal.createIdentity(StreamType.STREAM_TYPE, StreamType.STREAM_TYPE.STREAM_TYPE_ID);
@@ -127,6 +131,7 @@ public class Keys {
         public static final UniqueKey<ClientRecord> KEY_CLIENT_ID_UNIQUE = Internal.createUniqueKey(Client.CLIENT, "KEY_client_id_UNIQUE", Client.CLIENT.CLIENT_ID);
         public static final UniqueKey<CommunityRecord> KEY_COMMUNITY_PRIMARY = Internal.createUniqueKey(Community.COMMUNITY, "KEY_community_PRIMARY", Community.COMMUNITY.COMMUNITY_ID);
         public static final UniqueKey<CommunityRecord> KEY_COMMUNITY_NAME_UNIQUE = Internal.createUniqueKey(Community.COMMUNITY, "KEY_community_name_UNIQUE", Community.COMMUNITY.NAME);
+        public static final UniqueKey<FollowersRecord> KEY_FOLLOWERS_PRIMARY = Internal.createUniqueKey(Followers.FOLLOWERS, "KEY_followers_PRIMARY", Followers.FOLLOWERS.FOLLOWERS_ID);
         public static final UniqueKey<GameRecord> KEY_GAME_PRIMARY = Internal.createUniqueKey(Game.GAME, "KEY_game_PRIMARY", Game.GAME.GAME_ID);
         public static final UniqueKey<GameRecord> KEY_GAME_ID_UNIQUE = Internal.createUniqueKey(Game.GAME, "KEY_game_id_UNIQUE", Game.GAME.GAME_ID);
         public static final UniqueKey<GameRecord> KEY_GAME_NAME_UNIQUE = Internal.createUniqueKey(Game.GAME, "KEY_game_name_UNIQUE", Game.GAME.NAME);
@@ -148,6 +153,7 @@ public class Keys {
 
     private static class ForeignKeys0 {
         public static final ForeignKey<FollowersRecord, UserRecord> FK_FOLLOWERS_USER = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_USER_PRIMARY, Followers.FOLLOWERS, "fk_followers_user", Followers.FOLLOWERS.USER_ID);
+        public static final ForeignKey<StreamRecord, UserRecord> FK_STREAM_USER = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_USER_PRIMARY, Stream.STREAM, "fk_stream_user", Stream.STREAM.USER_ID);
         public static final ForeignKey<StreamRecord, GameRecord> FK_STREAM_GAME = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_GAME_PRIMARY, Stream.STREAM, "fk_stream_game", Stream.STREAM.GAME_ID);
         public static final ForeignKey<StreamRecord, StreamTypeRecord> FK_STREAM_STREAM_TYPE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_STREAM_TYPE_PRIMARY, Stream.STREAM, "fk_stream_stream_type", Stream.STREAM.STREAM_TYPE_ID);
         public static final ForeignKey<StreamRecord, LanguageRecord> FK_STREAM_LANGUAGE = Internal.createForeignKey(twitch.explorer.database.jooq.db.Keys.KEY_LANGUAGE_PRIMARY, Stream.STREAM, "fk_stream_language", Stream.STREAM.LANGUAGE_ID);

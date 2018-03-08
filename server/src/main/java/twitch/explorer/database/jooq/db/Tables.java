@@ -12,6 +12,10 @@ import twitch.explorer.database.jooq.db.tables.Community;
 import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
 import twitch.explorer.database.jooq.db.tables.Language;
+import twitch.explorer.database.jooq.db.tables.LatestFollowersUpdateView;
+import twitch.explorer.database.jooq.db.tables.LiveLongestTimeSinceFollowerUpdateView;
+import twitch.explorer.database.jooq.db.tables.LiveStreamsView;
+import twitch.explorer.database.jooq.db.tables.NewView;
 import twitch.explorer.database.jooq.db.tables.Stream;
 import twitch.explorer.database.jooq.db.tables.StreamCommunity;
 import twitch.explorer.database.jooq.db.tables.StreamType;
@@ -63,6 +67,26 @@ User’s broadcaster type: "partner", "affiliate", or "".
      * The table <code>twitch.language</code>.
      */
     public static final Language LANGUAGE = twitch.explorer.database.jooq.db.tables.Language.LANGUAGE;
+
+    /**
+     * VIEW
+     */
+    public static final LatestFollowersUpdateView LATEST_FOLLOWERS_UPDATE_VIEW = twitch.explorer.database.jooq.db.tables.LatestFollowersUpdateView.LATEST_FOLLOWERS_UPDATE_VIEW;
+
+    /**
+     * VIEW
+     */
+    public static final LiveLongestTimeSinceFollowerUpdateView LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW = twitch.explorer.database.jooq.db.tables.LiveLongestTimeSinceFollowerUpdateView.LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW;
+
+    /**
+     * VIEW
+     */
+    public static final LiveStreamsView LIVE_STREAMS_VIEW = twitch.explorer.database.jooq.db.tables.LiveStreamsView.LIVE_STREAMS_VIEW;
+
+    /**
+     * VIEW
+     */
+    public static final NewView NEW_VIEW = twitch.explorer.database.jooq.db.tables.NewView.NEW_VIEW;
 
     /**
      * The table <code>twitch.stream</code>.

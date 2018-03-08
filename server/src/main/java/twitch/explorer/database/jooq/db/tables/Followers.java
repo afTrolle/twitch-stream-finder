@@ -12,11 +12,13 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -39,7 +41,7 @@ import twitch.explorer.database.jooq.db.tables.records.FollowersRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Followers extends TableImpl<FollowersRecord> {
 
-    private static final long serialVersionUID = 1043106560;
+    private static final long serialVersionUID = -1499048922;
 
     /**
      * The reference instance of <code>twitch.followers</code>
@@ -53,6 +55,11 @@ public class Followers extends TableImpl<FollowersRecord> {
     public Class<FollowersRecord> getRecordType() {
         return FollowersRecord.class;
     }
+
+    /**
+     * The column <code>twitch.followers.followers_id</code>.
+     */
+    public final TableField<FollowersRecord, Integer> FOLLOWERS_ID = createField("followers_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>twitch.followers.followers</code>.
@@ -111,7 +118,31 @@ public class Followers extends TableImpl<FollowersRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FOLLOWERS_FK_FOLLOWERS_USER_IDX);
+        return Arrays.<Index>asList(Indexes.FOLLOWERS_FK_FOLLOWERS_USER_IDX, Indexes.FOLLOWERS_PRIMARY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<FollowersRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_FOLLOWERS;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<FollowersRecord> getPrimaryKey() {
+        return Keys.KEY_FOLLOWERS_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<FollowersRecord>> getKeys() {
+        return Arrays.<UniqueKey<FollowersRecord>>asList(Keys.KEY_FOLLOWERS_PRIMARY);
     }
 
     /**
