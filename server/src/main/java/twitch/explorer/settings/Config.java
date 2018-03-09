@@ -96,4 +96,8 @@ public class Config {
     public String getTwitchFollowerClientId() {
         return rb.getString("twitchFollowerClientID");
     }
+
+    public int getServerPort() {
+        return Integer.parseInt(rb.getString("serverPort"));
+    }
 }

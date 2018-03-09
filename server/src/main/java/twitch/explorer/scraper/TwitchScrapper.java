@@ -3,7 +3,6 @@ package twitch.explorer.scraper;
 import org.jooq.Record1;
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
-import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.records.*;
 import twitch.explorer.scraper.twitchApi.TwitchApiConfig;
 import twitch.explorer.scraper.twitchApi.json.follower.Follows;
