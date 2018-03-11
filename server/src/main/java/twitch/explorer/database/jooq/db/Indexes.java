@@ -74,7 +74,8 @@ public class Indexes {
     public static final Index USER_TYPE_ID_UNIQUE = Indexes0.USER_TYPE_ID_UNIQUE;
     public static final Index USER_TYPE_PRIMARY = Indexes0.USER_TYPE_PRIMARY;
     public static final Index USER_TYPE_TYPE_UNIQUE = Indexes0.USER_TYPE_TYPE_UNIQUE;
-    public static final Index VOTE_FK_VOTE_CLIENT_IDX = Indexes0.VOTE_FK_VOTE_CLIENT_IDX;
+    public static final Index VOTE_COOKIE_UNIQUE = Indexes0.VOTE_COOKIE_UNIQUE;
+    public static final Index VOTE_PRIMARY = Indexes0.VOTE_PRIMARY;
     public static final Index VOTE_USER_ID_FK_IDX = Indexes0.VOTE_USER_ID_FK_IDX;
 
     // -------------------------------------------------------------------------
@@ -115,7 +116,8 @@ public class Indexes {
         public static Index USER_TYPE_ID_UNIQUE = Internal.createIndex("id_UNIQUE", UserType.USER_TYPE, new OrderField[] { UserType.USER_TYPE.USER_TYPE_ID }, true);
         public static Index USER_TYPE_PRIMARY = Internal.createIndex("PRIMARY", UserType.USER_TYPE, new OrderField[] { UserType.USER_TYPE.USER_TYPE_ID }, true);
         public static Index USER_TYPE_TYPE_UNIQUE = Internal.createIndex("type_UNIQUE", UserType.USER_TYPE, new OrderField[] { UserType.USER_TYPE.TYPE }, true);
-        public static Index VOTE_FK_VOTE_CLIENT_IDX = Internal.createIndex("fk_vote_client_idx", Vote.VOTE, new OrderField[] { Vote.VOTE.CLIENT_ID }, false);
+        public static Index VOTE_COOKIE_UNIQUE = Internal.createIndex("cookie_UNIQUE", Vote.VOTE, new OrderField[] { Vote.VOTE.COOKIE }, true);
+        public static Index VOTE_PRIMARY = Internal.createIndex("PRIMARY", Vote.VOTE, new OrderField[] { Vote.VOTE.VOTE_ID }, true);
         public static Index VOTE_USER_ID_FK_IDX = Internal.createIndex("user_id_fk_idx", Vote.VOTE, new OrderField[] { Vote.VOTE.USER_ID }, false);
     }
 }

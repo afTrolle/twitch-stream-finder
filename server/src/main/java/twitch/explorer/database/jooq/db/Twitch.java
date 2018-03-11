@@ -19,6 +19,7 @@ import twitch.explorer.database.jooq.db.tables.Client;
 import twitch.explorer.database.jooq.db.tables.Community;
 import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
+import twitch.explorer.database.jooq.db.tables.GamesLive;
 import twitch.explorer.database.jooq.db.tables.Language;
 import twitch.explorer.database.jooq.db.tables.LatestFollowersUpdateView;
 import twitch.explorer.database.jooq.db.tables.LiveLongestTimeSinceFollowerUpdateView;
@@ -45,7 +46,7 @@ import twitch.explorer.database.jooq.db.tables.Vote;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Twitch extends SchemaImpl {
 
-    private static final long serialVersionUID = -534303940;
+    private static final long serialVersionUID = 1083938564;
 
     /**
      * The reference instance of <code>twitch</code>
@@ -77,6 +78,11 @@ User’s broadcaster type: "partner", "affiliate", or "".
      * The table <code>twitch.game</code>.
      */
     public final Game GAME = twitch.explorer.database.jooq.db.tables.Game.GAME;
+
+    /**
+     * VIEW
+     */
+    public final GamesLive GAMES_LIVE = twitch.explorer.database.jooq.db.tables.GamesLive.GAMES_LIVE;
 
     /**
      * The table <code>twitch.language</code>.
@@ -163,6 +169,7 @@ User’s broadcaster type: "partner", "affiliate", or "".
             Community.COMMUNITY,
             Followers.FOLLOWERS,
             Game.GAME,
+            GamesLive.GAMES_LIVE,
             Language.LANGUAGE,
             LatestFollowersUpdateView.LATEST_FOLLOWERS_UPDATE_VIEW,
             LiveLongestTimeSinceFollowerUpdateView.LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW,

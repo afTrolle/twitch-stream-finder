@@ -2,8 +2,11 @@ package twitch.explorer.database;
 
 
 import org.jooq.*;
+import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import twitch.explorer.database.jooq.db.Tables;
+import twitch.explorer.database.jooq.db.enums.VoteState;
+import twitch.explorer.database.jooq.db.tables.UserType;
 import twitch.explorer.database.jooq.db.tables.records.*;
 import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
@@ -26,6 +29,13 @@ public class JooqHandler {
     private Connection conn;
     private DSLContext create;
     private Config config;
+    private static JooqHandler jooqHandler;
+
+    public static JooqHandler get() throws SQLException {
+        if (jooqHandler == null)
+            jooqHandler = new JooqHandler();
+        return jooqHandler;
+    }
 
     public JooqHandler() throws SQLException {
         config = Config.get();
@@ -199,5 +209,27 @@ public class JooqHandler {
         synchronized (this) {
             create.batchInsert(followersRecords).execute();
         }
+    }
+
+
+    public void createVote(long userId, boolean isPositive, String sessionToken, String remoteHost) throws DataAccessException {
+        VoteRecord voteRecord = new VoteRecord();
+        voteRecord.setUserId(userId);
+        VoteState voteState = isPositive ? VoteState.positive : VoteState.negative;
+        voteRecord.setState(voteState);
+        voteRecord.setCookie(sessionToken);
+        create.executeInsert(voteRecord);
+    }
+
+    public synchronized Result<UserTypeRecord> getUserTypes() {
+        return create.selectFrom(UserType.USER_TYPE).fetch();
+    }
+
+    public synchronized Result<GamesLiveRecord> getStreamedGames() {
+      return create.selectFrom(GAMES_LIVE).fetch();
+    }
+
+    public Result<BroadcasterTypeRecord> getBroadcasterTypes() {
+        return create.selectFrom(BROADCASTER_TYPE).fetch();
     }
 }

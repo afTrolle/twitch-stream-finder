@@ -11,11 +11,13 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
@@ -39,7 +41,7 @@ import twitch.explorer.database.jooq.db.tables.records.VoteRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Vote extends TableImpl<VoteRecord> {
 
-    private static final long serialVersionUID = -1835969336;
+    private static final long serialVersionUID = -232826136;
 
     /**
      * The reference instance of <code>twitch.vote</code>
@@ -55,19 +57,24 @@ public class Vote extends TableImpl<VoteRecord> {
     }
 
     /**
-     * The column <code>twitch.vote.client_id</code>.
+     * The column <code>twitch.vote.vote_id</code>.
      */
-    public final TableField<VoteRecord, Integer> CLIENT_ID = createField("client_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<VoteRecord, Long> VOTE_ID = createField("vote_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>twitch.vote.user_id</code>.
      */
-    public final TableField<VoteRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<VoteRecord, Long> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>twitch.vote.state</code>.
      */
     public final TableField<VoteRecord, VoteState> STATE = createField("state", org.jooq.util.mysql.MySQLDataType.VARCHAR.asEnumDataType(twitch.explorer.database.jooq.db.enums.VoteState.class), this, "");
+
+    /**
+     * The column <code>twitch.vote.cookie</code>.
+     */
+    public final TableField<VoteRecord, String> COOKIE = createField("cookie", org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * Create a <code>twitch.vote</code> table reference
@@ -111,7 +118,31 @@ public class Vote extends TableImpl<VoteRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.VOTE_FK_VOTE_CLIENT_IDX, Indexes.VOTE_USER_ID_FK_IDX);
+        return Arrays.<Index>asList(Indexes.VOTE_COOKIE_UNIQUE, Indexes.VOTE_PRIMARY, Indexes.VOTE_USER_ID_FK_IDX);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<VoteRecord, Long> getIdentity() {
+        return Keys.IDENTITY_VOTE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<VoteRecord> getPrimaryKey() {
+        return Keys.KEY_VOTE_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<VoteRecord>> getKeys() {
+        return Arrays.<UniqueKey<VoteRecord>>asList(Keys.KEY_VOTE_PRIMARY, Keys.KEY_VOTE_COOKIE_UNIQUE);
     }
 
     /**
@@ -119,7 +150,7 @@ public class Vote extends TableImpl<VoteRecord> {
      */
     @Override
     public List<ForeignKey<VoteRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<VoteRecord, ?>>asList(Keys.FK_VOTE_CLIENT);
+        return Arrays.<ForeignKey<VoteRecord, ?>>asList(Keys.FK_VOTE_USER);
     }
 
     /**

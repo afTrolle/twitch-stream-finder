@@ -11,6 +11,7 @@ import twitch.explorer.database.jooq.db.tables.Client;
 import twitch.explorer.database.jooq.db.tables.Community;
 import twitch.explorer.database.jooq.db.tables.Followers;
 import twitch.explorer.database.jooq.db.tables.Game;
+import twitch.explorer.database.jooq.db.tables.GamesLive;
 import twitch.explorer.database.jooq.db.tables.Language;
 import twitch.explorer.database.jooq.db.tables.LatestFollowersUpdateView;
 import twitch.explorer.database.jooq.db.tables.LiveLongestTimeSinceFollowerUpdateView;
@@ -62,6 +63,11 @@ User’s broadcaster type: "partner", "affiliate", or "".
      * The table <code>twitch.game</code>.
      */
     public static final Game GAME = twitch.explorer.database.jooq.db.tables.Game.GAME;
+
+    /**
+     * VIEW
+     */
+    public static final GamesLive GAMES_LIVE = twitch.explorer.database.jooq.db.tables.GamesLive.GAMES_LIVE;
 
     /**
      * The table <code>twitch.language</code>.

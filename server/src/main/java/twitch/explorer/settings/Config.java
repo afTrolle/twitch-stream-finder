@@ -76,15 +76,6 @@ public class Config {
         return Integer.parseInt(rb.getString("twitchRateLimit"));
     }
 
-    /**
-     * get how many minutes between live user updates.
-     *
-     * @return integer with how many minutes between updating live user data
-     */
-    public int getUpdateLiveUsersInterval() {
-        return Integer.parseInt(rb.getString("twitchUpdateLiveUsersInterval"));
-    }
-
     public int getTwitchFollowerRateLimit() {
         return Integer.parseInt(rb.getString("twitchFollowerLimit"));
     }

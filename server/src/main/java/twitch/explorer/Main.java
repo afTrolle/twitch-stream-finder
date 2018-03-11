@@ -11,9 +11,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-
         try {
-            JooqHandler jooqHandler = new JooqHandler();
+            JooqHandler jooqHandler = JooqHandler.get();
             RestServer restServer = new RestServer();
             TwitchScrapper scrapper = new TwitchScrapper(jooqHandler);
             scrapper.start();

@@ -12,4 +12,5 @@ public class Games {
     @Expose
     public List<Game> data = new ArrayList<Game>();
 
+
 }

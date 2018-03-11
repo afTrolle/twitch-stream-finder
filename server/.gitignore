@@ -110,3 +110,6 @@ gradle-app.setting
 
 #ignore config file so we don't leak auth key
 twitchConfig.properties
+
+#ignore session Storage
+/sessions/*

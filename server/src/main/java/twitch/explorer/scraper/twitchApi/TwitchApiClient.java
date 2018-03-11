@@ -37,7 +37,7 @@ public class TwitchApiClient {
         Client client = Client.create();
         WebResource rootRes = client.resource("https://api.twitch.tv/helix/");
 
-        // set api endpoints
+        // set api endpoint
         gamesRes = rootRes.path("games");
         streamsRes = rootRes.path("streams");
         usersRes = rootRes.path("users");
