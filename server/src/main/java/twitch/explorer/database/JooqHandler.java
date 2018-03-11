@@ -6,7 +6,9 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import twitch.explorer.database.jooq.gen.Tables;
 import twitch.explorer.database.jooq.gen.enums.VoteState;
-import twitch.explorer.database.jooq.gen.tables.UserType;
+import twitch.explorer.database.jooq.gen.tables.pojos.BroadcasterType;
+import twitch.explorer.database.jooq.gen.tables.pojos.GamesLive;
+import twitch.explorer.database.jooq.gen.tables.pojos.UserType;
 import twitch.explorer.database.jooq.gen.tables.records.*;
 import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
@@ -19,10 +21,9 @@ import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
-import static twitch.explorer.database.jooq.gen.Tables.GAME;
-import static twitch.explorer.database.jooq.gen.Tables.LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW;
-import static twitch.explorer.database.jooq.gen.Tables.STREAM;
+import static twitch.explorer.database.jooq.gen.Tables.*;
 import static twitch.explorer.database.jooq.gen.tables.BroadcasterType.BROADCASTER_TYPE;
 import static twitch.explorer.database.jooq.gen.tables.Followers.FOLLOWERS;
 import static twitch.explorer.database.jooq.gen.tables.GamesLive.GAMES_LIVE;
@@ -227,15 +228,15 @@ public class JooqHandler {
         create.executeInsert(voteRecord);
     }
 
-    public synchronized Result<UserTypeRecord> getUserTypes() {
-        return create.selectFrom(UserType.USER_TYPE).fetch();
+    public synchronized List<UserType> getUserTypes() {
+        return create.selectFrom(USER_TYPE).fetchInto(UserType.class);
     }
 
-    public synchronized Result<GamesLiveRecord> getStreamedGames() {
-      return create.selectFrom(GAMES_LIVE).fetch();
+    public synchronized List<GamesLive> getStreamedGames() {
+      return create.selectFrom(GAMES_LIVE).fetchInto(GamesLive.class);
     }
 
-    public Result<BroadcasterTypeRecord> getBroadcasterTypes() {
-        return create.selectFrom(BROADCASTER_TYPE).fetch();
+    public List<BroadcasterType> getBroadcasterTypes() {
+        return create.selectFrom(BROADCASTER_TYPE).fetchInto(BroadcasterType.class);
     }
 }
