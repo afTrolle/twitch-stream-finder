@@ -4,10 +4,10 @@ package twitch.explorer.database;
 import org.jooq.*;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
-import twitch.explorer.database.jooq.db.Tables;
-import twitch.explorer.database.jooq.db.enums.VoteState;
-import twitch.explorer.database.jooq.db.tables.UserType;
-import twitch.explorer.database.jooq.db.tables.records.*;
+import twitch.explorer.database.jooq.gen.Tables;
+import twitch.explorer.database.jooq.gen.enums.VoteState;
+import twitch.explorer.database.jooq.gen.tables.UserType;
+import twitch.explorer.database.jooq.gen.tables.records.*;
 import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
 import twitch.explorer.settings.Config;
@@ -20,7 +20,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import static twitch.explorer.database.jooq.db.Tables.*;
+import static twitch.explorer.database.jooq.gen.Tables.GAME;
+import static twitch.explorer.database.jooq.gen.Tables.LIVE_LONGEST_TIME_SINCE_FOLLOWER_UPDATE_VIEW;
+import static twitch.explorer.database.jooq.gen.Tables.STREAM;
+import static twitch.explorer.database.jooq.gen.tables.BroadcasterType.BROADCASTER_TYPE;
+import static twitch.explorer.database.jooq.gen.tables.Followers.FOLLOWERS;
+import static twitch.explorer.database.jooq.gen.tables.GamesLive.GAMES_LIVE;
+import static twitch.explorer.database.jooq.gen.tables.User.USER;
 
 
 public class JooqHandler {
@@ -49,14 +55,14 @@ public class JooqHandler {
     }
 
     private void getGames() {
-        Result<GameRecord> gameRecord = create.selectFrom(Tables.GAME).fetch();
+        Result<GameRecord> gameRecord = create.selectFrom(GAME).fetch();
         for (GameRecord r : gameRecord) {
             String awesome = r.getName();
         }
     }
 
     private synchronized GameRecord createGame(int gameId, String name, String artUrl) {
-        GameRecord record = create.newRecord(Tables.GAME);
+        GameRecord record = create.newRecord(GAME);
         record.setGameId(gameId);
         record.setName(name);
         record.setArtUrl(artUrl);
@@ -65,7 +71,7 @@ public class JooqHandler {
     }
 
     public synchronized GameRecord getGameById(String gameId) {
-        return create.selectFrom(Tables.GAME).where(Tables.GAME.GAME_ID.eq(Integer.parseInt(gameId))).fetchOne();
+        return create.selectFrom(GAME).where(GAME.GAME_ID.eq(Integer.parseInt(gameId))).fetchOne();
     }
 
     public synchronized UserRecord getUser(String userId) {

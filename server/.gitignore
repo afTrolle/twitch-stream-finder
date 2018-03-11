@@ -113,3 +113,6 @@ twitchConfig.properties
 
 #ignore session Storage
 /sessions/*
+
+#ignore generated Files
+/src/main/java/twitch/explorer/database/jooq/gen/*

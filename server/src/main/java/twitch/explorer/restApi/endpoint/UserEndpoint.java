@@ -2,8 +2,8 @@ package twitch.explorer.restApi.endpoint;
 
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
-import twitch.explorer.database.jooq.db.tables.records.BroadcasterTypeRecord;
-import twitch.explorer.database.jooq.db.tables.records.UserTypeRecord;
+import twitch.explorer.database.jooq.gen.tables.records.BroadcasterTypeRecord;
+import twitch.explorer.database.jooq.gen.tables.records.UserTypeRecord;
 import twitch.explorer.utils.GsonHelper;
 
 import javax.ws.rs.GET;

@@ -2,7 +2,7 @@ package twitch.explorer.restApi.endpoint;
 
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
-import twitch.explorer.database.jooq.db.tables.records.GamesLiveRecord;
+import twitch.explorer.database.jooq.gen.tables.records.GamesLiveRecord;
 import twitch.explorer.utils.GsonHelper;
 
 import javax.ws.rs.*;
