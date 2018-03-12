@@ -34,6 +34,4 @@ public class GameEndpoint {
         throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
 
-
-
 }

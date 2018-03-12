@@ -37,7 +37,7 @@ public class RestServer {
 
         try {
             server.start();
-            server.join();
+         //   server.join();
         } catch (Exception e) {
             e.printStackTrace();
         }

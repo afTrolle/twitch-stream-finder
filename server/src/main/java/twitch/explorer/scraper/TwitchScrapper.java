@@ -1,5 +1,6 @@
 package twitch.explorer.scraper;
 
+import com.sun.jersey.api.client.UniformInterfaceException;
 import org.jooq.Record1;
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
@@ -52,19 +53,33 @@ public class TwitchScrapper {
         ArrayList<Follows> follows = new ArrayList<>(240);
         while (isScraping) {
 
-            Result<LiveLongestTimeSinceFollowerUpdateViewRecord> sinceUpdateFollowers = jooqHandler.getLongestTimeSinceFollowers();
+            try {
+                Result<LiveLongestTimeSinceFollowerUpdateViewRecord> sinceUpdateFollowers = jooqHandler.getLongestTimeSinceFollowers();
 
-            for (int i = 0; i < sinceUpdateFollowers.size(); i++) {
-                LiveLongestTimeSinceFollowerUpdateViewRecord liveStream = sinceUpdateFollowers.get(i);
-                Long userId = liveStream.getUserId();
-                Follows fetchedFollowers = followerClient.getAmountOfFollowers(userId);
-                fetchedFollowers.userID = liveStream.getUserId();
-                follows.add(fetchedFollowers);
+                // if no followers to fetch exists then sleep 5 sec
+                if (sinceUpdateFollowers.isEmpty()) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+
+                for (LiveLongestTimeSinceFollowerUpdateViewRecord liveStream : sinceUpdateFollowers) {
+                    Long userId = liveStream.getUserId();
+                    Follows fetchedFollowers = followerClient.getAmountOfFollowers(userId);
+                    fetchedFollowers.userID = liveStream.getUserId();
+                    follows.add(fetchedFollowers);
+                }
+
+                //TODO update DB
+                jooqHandler.createFollowers(follows);
+                follows.clear();
+            } catch (UniformInterfaceException e) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ignored) {
+                }
             }
-
-            //TODO update DB
-            jooqHandler.createFollowers(follows);
-            follows.clear();
         }
     }
 
@@ -72,24 +87,25 @@ public class TwitchScrapper {
     private void loopFunction() {
         try {
             while (isScraping) {
-                HashMap<String, Stream> liveStreams = gatherAllLiveStreams();
-                createMissingUsers(liveStreams);
-                createMissingGames(liveStreams);
-                createAndUpdateStream(liveStreams);
-                detectEndedStreams(liveStreams);
-                updateLiveUsers(liveStreams);
+                try {
+                    HashMap<String, Stream> liveStreams = gatherAllLiveStreams();
+                    System.out.println();
+                    createMissingUsers(liveStreams);
+                    createMissingGames(liveStreams);
+                    createAndUpdateStream(liveStreams);
+                    detectEndedStreams(liveStreams);
+                } catch (UniformInterfaceException e) {
+                    e.printStackTrace();
+                    Thread.sleep(5000);
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateLiveUsers(HashMap<String, Stream> liveStreams) {
 
-
-    }
-
-    private void createMissingGames(HashMap<String, Stream> liveStreams) {
+    private void createMissingGames(HashMap<String, Stream> liveStreams) throws UniformInterfaceException {
 
         HashSet<Integer> liveGameIds = new HashSet<>();
         for (Stream stream : liveStreams.values()) {
@@ -127,7 +143,7 @@ public class TwitchScrapper {
         }
     }
 
-    private void detectEndedStreams(HashMap<String, Stream> streamCollection) {
+    private void detectEndedStreams(HashMap<String, Stream> streamCollection) throws UniformInterfaceException {
         Collection<Stream> streams = streamCollection.values();
         HashSet<Long> streamIds = new HashSet<>(streams.size());
         for (Stream stream : streams) {
@@ -143,7 +159,7 @@ public class TwitchScrapper {
         }
     }
 
-    private void createAndUpdateStream(HashMap<String, Stream> streamCollection) throws InterruptedException {
+    private void createAndUpdateStream(HashMap<String, Stream> streamCollection) throws InterruptedException, UniformInterfaceException {
 
         for (Stream stream : streamCollection.values()) {
             //  stream.gameId;
@@ -251,7 +267,7 @@ public class TwitchScrapper {
     }
 
 
-    private HashMap<String, Stream> gatherAllLiveStreams() throws InterruptedException {
+    private HashMap<String, Stream> gatherAllLiveStreams() throws UniformInterfaceException {
         //Assuming at-least 25k live streamers
         HashMap<String, Stream> streamHashMap = new HashMap<>(25000);
         String streamCursor = null;
@@ -264,7 +280,7 @@ public class TwitchScrapper {
                 streamHashMap.putIfAbsent(stream.id, stream);
             }
 
-            Printer.setNumberOfStreamsIndex(streamHashMap.size());
+            //  Printer.setNumberOfStreamsIndex(streamHashMap.size());
 
             streamCursor = twitchStreams.pagination.cursor;
             if (streamCursor == null || streamCursor.isEmpty()) {
@@ -273,7 +289,7 @@ public class TwitchScrapper {
         }
     }
 
-    private void createMissingUsers(HashMap<String, Stream> streamCollection) throws InterruptedException {
+    private void createMissingUsers(HashMap<String, Stream> streamCollection) throws InterruptedException, UniformInterfaceException {
 
         //get live streaming userIDs as integer
         HashSet<Long> liveUserIds = new HashSet<>(streamCollection.size());

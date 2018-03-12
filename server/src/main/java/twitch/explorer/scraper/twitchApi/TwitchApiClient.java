@@ -125,9 +125,9 @@ public class TwitchApiClient {
     }
 
 
-    public Follows getAmountOfFollowers(Long streamId) {
+    public Follows getAmountOfFollowers(Long streamId) throws UniformInterfaceException {
         MultivaluedMapImpl map = new MultivaluedMapImpl();
-        map.add("from_id", streamId);
+        map.add("to_id", streamId);
         map.add("first", "1");
         WebResource resource = followRes.queryParams(map);
         return get(resource, Follows.class);

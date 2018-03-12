@@ -18,13 +18,17 @@ public class VoteEndpoint {
 
     @POST
     @Path("/user/{userId}")
-    public Response voteOnUser(@PathParam("userId") String userId, @QueryParam("positive") boolean isPositive, @Context HttpServletRequest req) {
+    public Response voteOnUser(@PathParam("userId") String userId, @QueryParam("positive") Boolean isPositive, @Context HttpServletRequest req) {
         HttpSession session = req.getSession(true);
 
         //session cookie
         String sessionToken = session.getId();
         //remote ip or proxy ip
         String remoteHost = req.getRemoteHost();
+
+        if (isPositive == null){
+            return Response.status(Response.Status.BAD_REQUEST).entity("requires 'positive' query parameter to be true or false").build();
+        }
 
         long userIdL = 0;
         try {

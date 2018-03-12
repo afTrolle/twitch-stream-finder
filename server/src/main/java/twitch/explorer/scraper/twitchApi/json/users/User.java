@@ -32,6 +32,6 @@ public class User {
     public String offlineImageUrl;
     @SerializedName("view_count")
     @Expose
-    public int viewCount;
+    public long viewCount;
 
 }

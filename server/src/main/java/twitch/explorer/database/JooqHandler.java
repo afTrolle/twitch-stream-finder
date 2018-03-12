@@ -6,14 +6,17 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 import twitch.explorer.database.jooq.gen.Tables;
 import twitch.explorer.database.jooq.gen.enums.VoteState;
+import twitch.explorer.database.jooq.gen.tables.LiveStreamUserVoteView;
 import twitch.explorer.database.jooq.gen.tables.pojos.BroadcasterType;
 import twitch.explorer.database.jooq.gen.tables.pojos.GamesLive;
 import twitch.explorer.database.jooq.gen.tables.pojos.UserType;
 import twitch.explorer.database.jooq.gen.tables.records.*;
+import twitch.explorer.restApi.endpoint.StreamEndpoint;
 import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
 import twitch.explorer.settings.Config;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -233,10 +236,15 @@ public class JooqHandler {
     }
 
     public synchronized List<GamesLive> getStreamedGames() {
-      return create.selectFrom(GAMES_LIVE).fetchInto(GamesLive.class);
+        return create.selectFrom(GAMES_LIVE).fetchInto(GamesLive.class);
     }
 
     public List<BroadcasterType> getBroadcasterTypes() {
         return create.selectFrom(BROADCASTER_TYPE).fetchInto(BroadcasterType.class);
+    }
+
+
+    public synchronized List<twitch.explorer.database.jooq.gen.tables.pojos.LiveStreamUserVoteView> searchStream(ArrayList<Condition> conditions) {
+        return create.selectFrom(LIVE_STREAM_USER_VOTE_VIEW).where(conditions).fetchInto(twitch.explorer.database.jooq.gen.tables.pojos.LiveStreamUserVoteView.class);
     }
 }
