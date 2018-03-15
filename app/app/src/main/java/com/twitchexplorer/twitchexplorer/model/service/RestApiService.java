@@ -12,7 +12,6 @@ import com.twitchexplorer.twitchexplorer.model.pojo.Language;
 import com.twitchexplorer.twitchexplorer.model.pojo.LiveStreamUserVoteView;
 import com.twitchexplorer.twitchexplorer.model.pojo.StreamType;
 import com.twitchexplorer.twitchexplorer.model.pojo.UserType;
-import com.twitchexplorer.twitchexplorer.view.activity.MainActivity;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
 
 import okhttp3.OkHttpClient;
 
@@ -197,7 +195,7 @@ public class RestApiService {
         }
 
         public void setMinStreamTime(int minStreamTime) {
-            map.put("streamTypeId", Integer.toString(minStreamTime));
+            map.put("minStreamTime", Integer.toString(minStreamTime));
         }
 
         public void setMaxStreamTime(int maxStreamTime) {
@@ -225,11 +223,11 @@ public class RestApiService {
         }
 
         public void setMinVoteRatio(double minVoteRatio) {
-            map.put("maxFollowerCount", Double.toString(minVoteRatio));
+            map.put("minVoteRatio", Double.toString(minVoteRatio));
         }
 
         public void setMaxVoteRatio(double maxVoteRatio) {
-            map.put("maxFollowerCount", Double.toString(maxVoteRatio));
+            map.put("maxVoteRatio", Double.toString(maxVoteRatio));
         }
 
         public void setLimit(int i) {
@@ -237,7 +235,7 @@ public class RestApiService {
         }
 
         public void setBroadCasterTypeId(Integer broadcasterTypeId) {
-            map.put("maxFollowerCount", Double.toString(broadcasterTypeId));
+            map.put("broadCasterTypeId", Integer.toString(broadcasterTypeId));
         }
     }
 

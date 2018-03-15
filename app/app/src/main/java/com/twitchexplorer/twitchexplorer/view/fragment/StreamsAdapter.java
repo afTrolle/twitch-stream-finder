@@ -58,6 +58,8 @@ class StreamsAdapter extends RecyclerView.Adapter<StreamsAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
+        if (viewData == null || viewData.size() == 0)
+            return 0;
         return viewData.size();
     }
 

@@ -6,6 +6,6 @@
     <string name="game">Game</string>
     <string name="type_of_stream">Type of Stream</string>
     <string name="language">Language</string>
-    <string name="started_before">Least min online</string>
-    <string name="started_after">Most min online</string>
+    <string name="started_before">Most min online</string>
+    <string name="started_after">Least min online</string>
 </resources>

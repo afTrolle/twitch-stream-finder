@@ -101,12 +101,12 @@ public class StreamEndpoint {
         }
 
         if (minStreamTime >= 0) {
-            final Timestamp timestamp = new Timestamp(System.currentTimeMillis() - minStreamTime);
+            final Timestamp timestamp = new Timestamp(System.currentTimeMillis() - (minStreamTime*1000*60));
             conditions.add(view.STARTED.greaterOrEqual(timestamp));
         }
 
         if (maxStreamTime >= 0) {
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis() - maxStreamTime);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis() - (maxStreamTime*1000*60));
             conditions.add(view.STARTED.lessOrEqual(timestamp));
         }
 
