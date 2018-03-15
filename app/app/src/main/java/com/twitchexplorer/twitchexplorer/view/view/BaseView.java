@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import butterknife.ButterKnife;
@@ -14,7 +15,7 @@ import butterknife.Unbinder;
 
 public abstract class BaseView extends FrameLayout {
 
-    private Unbinder unbinder;
+    Unbinder unbinder;
 
     public abstract @LayoutRes
     int getViewInflateLayout();
@@ -45,8 +46,10 @@ public abstract class BaseView extends FrameLayout {
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        unbinder.unbind();
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (unbinder != null)
+            unbinder.unbind();
     }
+
 }

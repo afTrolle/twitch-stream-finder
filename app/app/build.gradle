@@ -38,7 +38,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.2'
 
     //Picasso
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     //EasyPermissions
     implementation 'pub.devrel:easypermissions:1.1.0'
