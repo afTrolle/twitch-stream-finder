@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Stream search Params -->
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/search_stream_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/stream_title"
+        android:inputType="text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:met_floatingLabel="highlight"
+        app:met_maxCharacters="255"
+        app:met_minCharacters="0"
+        app:met_singleLineEllipsis="true" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/search_stream_min_view_count"
+        style="@style/myTexStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:hint="@string/min_viewers"
+        android:inputType="number"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/search_stream_max_view_count"
+        app:layout_constraintTop_toBottomOf="@id/search_stream_title" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/search_stream_max_view_count"
+        style="@style/myTexStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:hint="@string/max_viewers"
+        android:inputType="number"
+        app:layout_constraintLeft_toRightOf="@id/search_stream_min_view_count"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_stream_title" />
+
+
+    <!-- https://github.com/ganfra/MaterialSpinner -->
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/search_stream_game_spinner"
+        style="@style/myTexStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/game"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_stream_min_view_count"
+        app:met_floatingLabel="highlight" />
+
+    <!-- https://github.com/ganfra/MaterialSpinner -->
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/search_stream_language_spinner"
+        style="@style/myTexStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:hint="@string/language"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/search_stream_stream_type_spinner"
+        app:layout_constraintTop_toBottomOf="@id/search_stream_game_spinner"
+        app:met_floatingLabel="highlight" />
+
+    <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
+        android:id="@+id/search_stream_stream_type_spinner"
+        style="@style/myTexStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:hint="@string/type_of_stream"
+        app:layout_constraintLeft_toRightOf="@id/search_stream_language_spinner"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_stream_game_spinner"
+        app:met_floatingLabel="highlight" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/search_stream_stream_min_time"
+        style="@style/myTexStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:hint="@string/started_before"
+        android:inputType="number"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/search_stream_stream_max_time"
+        app:layout_constraintTop_toBottomOf="@id/search_stream_stream_type_spinner" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/search_stream_stream_max_time"
+        style="@style/myTexStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:hint="@string/started_after"
+        android:inputType="number"
+        app:layout_constraintLeft_toRightOf="@id/search_stream_stream_min_time"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_stream_stream_type_spinner" />
+
+
+</android.support.constraint.ConstraintLayout>

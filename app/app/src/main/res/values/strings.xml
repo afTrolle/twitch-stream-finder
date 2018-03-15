@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Twitch Explorer</string>
+    <string name="stream_title">Stream Title</string>
+    <string name="min_viewers">Min Viewers</string>
+    <string name="max_viewers">Max Viewers</string>
+    <string name="game">Game</string>
+    <string name="type_of_stream">Type of Stream</string>
+    <string name="language">Language</string>
+    <string name="started_before">Most min online</string>
+    <string name="started_after">Least min online</string>
+</resources>

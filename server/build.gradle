@@ -1,0 +1,87 @@
+group 'com.twitchexplorer'
+version '1.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'mysql:mysql-connector-java:5.1.13'
+        classpath 'org.jooq:jooq-codegen:3.10.5'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
+    compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.9.1'
+    // gson from google
+    compile 'com.google.code.gson:gson:2.8.1'
+
+    //jooq
+    compile 'org.jooq:jooq:3.10.5'
+    compile 'mysql:mysql-connector-java:5.1.13'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.+'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlet
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.3.+'
+
+    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-servlet
+    compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.19.4'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-http
+    compile group: 'org.eclipse.jetty', name: 'jetty-http', version: '9.3.+'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-infinispan
+    compile group: 'org.eclipse.jetty', name: 'jetty-infinispan', version: '9.3.+'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp
+    compile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.3.+'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlet
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.3.+'
+
+}
+
+// Use your favourite XML builder to construct the code generation configuration file
+// ----------------------------------------------------------------------------------
+def writer = new StringWriter()
+def xml = new groovy.xml.MarkupBuilder(writer)
+        .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.10.0.xsd') {
+    jdbc() {
+        driver('com.mysql.jdbc.Driver')
+        url('jdbc:mysql://localhost:3306')
+        user('root')
+        password('password')
+    }
+    generator() {
+        database() {
+            name('org.jooq.util.mysql.MySQLDatabase')
+            inputSchema('twitch')
+        }
+        generate() {
+            immutablePojos(true)
+        }
+        target() {
+            packageName('twitch.explorer.database.jooq.gen')
+            directory('src/main/java')
+        }
+    }
+}
+
+// Run the code generator
+// ----------------------
+org.jooq.util.GenerationTool.generate(
+        javax.xml.bind.JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
+)
