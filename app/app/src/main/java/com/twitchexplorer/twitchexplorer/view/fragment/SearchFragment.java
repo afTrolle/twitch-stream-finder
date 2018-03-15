@@ -274,6 +274,16 @@ public class SearchFragment extends BaseFragment {
             params.setMaxVoteRatio((double) highest);
         }
 
+        String broadCasterString = broadCasterTypeSpinner.getText().toString();
+        if (!broadCasterString.isEmpty()){
+            for (BroadcasterType broadcasterType : broadcasterTypes) {
+                if (broadcasterType.getType().equals(broadCasterString))
+                    params.setBroadCasterTypeId(broadcasterType.getBroadcasterTypeId());
+            }
+
+
+        }
+
         String minFollowerStr = minFollowerCount.getText().toString();
         String maxFollowerStr = maxFollowerCount.getText().toString();
         if (!minFollowerStr.isEmpty()) {

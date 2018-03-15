@@ -46,6 +46,7 @@ public class StreamEndpoint {
             @QueryParam("userName") String userName,
             @QueryParam("userDescription") String userDescription,
             @DefaultValue("-1") @QueryParam("userTypeId") int userTypeId,
+            @DefaultValue("-1") @QueryParam("broadCasterTypeId") int broadcasterTypeId,
             @DefaultValue("-1") @QueryParam("minFollowerCount") int minFollowerCount,
             @DefaultValue("-1") @QueryParam("maxFollowerCount") int maxFollowerCount,
             @DefaultValue("-1") @QueryParam("minVoteRatio") double minVoteRatio,
@@ -131,6 +132,10 @@ public class StreamEndpoint {
 
         if (maxTotalViewCount >= 0) {
             conditions.add(view.TOTAL_VIEWS.lessOrEqual(minTotalViewCount));
+        }
+
+        if (broadcasterTypeId >= 0) {
+            conditions.add(view.BROADCASTER_TYPE_ID.eq(broadcasterTypeId));
         }
 
         try {

@@ -63,16 +63,16 @@ public class RestApiService {
             @Override
             public void run() {
                 try {
-                        okhttp3.Request request = new okhttp3.Request.Builder().url(url).build();
-                        okhttp3.Response resp = client.newCall(request).execute();
-                        final Object o = gson.fromJson(resp.body().charStream(), type);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d("done", "convertiondone");
-                                response.onResponse(o);
-                            }
-                        });
+                    okhttp3.Request request = new okhttp3.Request.Builder().url(url).build();
+                    okhttp3.Response resp = client.newCall(request).execute();
+                    final Object o = gson.fromJson(resp.body().charStream(), type);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("done", "convertiondone");
+                            response.onResponse(o);
+                        }
+                    });
                 } catch (final Exception e) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -234,6 +234,10 @@ public class RestApiService {
 
         public void setLimit(int i) {
             map.put("limit", Integer.toString(i));
+        }
+
+        public void setBroadCasterTypeId(Integer broadcasterTypeId) {
+            map.put("maxFollowerCount", Double.toString(broadcasterTypeId));
         }
     }
 
