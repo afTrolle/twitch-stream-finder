@@ -6,7 +6,9 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import twitch.explorer.database.JooqHandler;
+import twitch.explorer.database.jooq.gen.tables.pojos.Language;
 import twitch.explorer.database.jooq.gen.tables.pojos.LiveStreamUserVoteView;
+import twitch.explorer.database.jooq.gen.tables.pojos.StreamType;
 import twitch.explorer.database.jooq.gen.tables.records.LiveStreamUserVoteViewRecord;
 import twitch.explorer.utils.GsonHelper;
 
@@ -49,7 +51,8 @@ public class StreamEndpoint {
             @DefaultValue("-1") @QueryParam("minVoteRatio") double minVoteRatio,
             @DefaultValue("-1") @QueryParam("maxVoteRatio") double maxVoteRatio,
             @DefaultValue("-1") @QueryParam("minTotalViewCount") long minTotalViewCount,
-            @DefaultValue("-1") @QueryParam("maxTotalViewCount") long maxTotalViewCount) {
+            @DefaultValue("-1") @QueryParam("maxTotalViewCount") long maxTotalViewCount,
+            @DefaultValue("-1") @QueryParam("limit") int limit) {
 
 
         final ArrayList<Condition> conditions = new ArrayList<>();
@@ -132,7 +135,7 @@ public class StreamEndpoint {
 
         try {
             JooqHandler jooqHandler = JooqHandler.get();
-            List<LiveStreamUserVoteView> liveStreams = jooqHandler.searchStream(conditions);
+            List<LiveStreamUserVoteView> liveStreams = jooqHandler.searchStream(conditions, limit);
             return GsonHelper.gson.toJson(liveStreams);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -141,5 +144,34 @@ public class StreamEndpoint {
         throw new WebApplicationException();
     }
 
+    @Path("/languages")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public String streamLanguages() {
+        try {
+            JooqHandler jooqHandler = JooqHandler.get();
+            List<Language> languages = jooqHandler.getLanguages();
+            return GsonHelper.gson.toJson(languages);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        throw new WebApplicationException();
+    }
+
+    @Path("/streamTypes")
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    public String streamTypes() {
+        try {
+            JooqHandler jooqHandler = JooqHandler.get();
+            List<StreamType> streamTypes = jooqHandler.getStreamTypes();
+            return GsonHelper.gson.toJson(streamTypes);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        throw new WebApplicationException();
+    }
 
 }

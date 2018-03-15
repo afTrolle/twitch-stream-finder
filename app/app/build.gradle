@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.twitchexplorer.twitchexplorer"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    //Butter Knife
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    //Dagger dependencies injection
+    compile 'com.google.dagger:dagger:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    compile 'com.google.dagger:dagger-android-support:2.11'
+
+    //Gson https://github.com/google/gson
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    //Picasso
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    //EasyPermissions
+    implementation 'pub.devrel:easypermissions:1.1.0'
+
+    //material spinner
+    compile('com.weiwangcn.betterspinner:library-material:1.1.0') {
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+        exclude group: 'com.rengwuxian.materialedittext', module: 'library'
+    }
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+
+    compile('com.appyvet:materialrangebar:1.4.1') {
+        exclude module: 'support-compat'
+    }
+
+
+    compile 'com.github.aakira:expandable-layout:1.6.0@aar'
+
+
+    compile 'com.android.support:support-core-ui:26.1.0'
+    compile 'com.android.support:support-core-utils:26.1.0'
+    compile 'com.android.support:support-compat:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.android.support:cardview-v7:26.1.0'
+    compile 'com.android.support:preference-v7:26.1.0'
+    compile 'com.jakewharton:butterknife:8.8.1'
+
+    //rest Client
+    compile 'com.android.volley:volley:1.1.0'
+    compile 'com.squareup.okhttp3:okhttp:3.10.0'
+}

@@ -7,9 +7,7 @@ import org.jooq.impl.DSL;
 import twitch.explorer.database.jooq.gen.Tables;
 import twitch.explorer.database.jooq.gen.enums.VoteState;
 import twitch.explorer.database.jooq.gen.tables.LiveStreamUserVoteView;
-import twitch.explorer.database.jooq.gen.tables.pojos.BroadcasterType;
-import twitch.explorer.database.jooq.gen.tables.pojos.GamesLive;
-import twitch.explorer.database.jooq.gen.tables.pojos.UserType;
+import twitch.explorer.database.jooq.gen.tables.pojos.*;
 import twitch.explorer.database.jooq.gen.tables.records.*;
 import twitch.explorer.restApi.endpoint.StreamEndpoint;
 import twitch.explorer.scraper.twitchApi.json.follower.Follows;
@@ -244,7 +242,19 @@ public class JooqHandler {
     }
 
 
-    public synchronized List<twitch.explorer.database.jooq.gen.tables.pojos.LiveStreamUserVoteView> searchStream(ArrayList<Condition> conditions) {
+    public synchronized List<twitch.explorer.database.jooq.gen.tables.pojos.LiveStreamUserVoteView> searchStream(ArrayList<Condition> conditions, int limit) {
+        if (limit > 0) {
+            return create.selectFrom(LIVE_STREAM_USER_VOTE_VIEW).where(conditions).limit(limit).fetchInto(twitch.explorer.database.jooq.gen.tables.pojos.LiveStreamUserVoteView.class);
+        }
         return create.selectFrom(LIVE_STREAM_USER_VOTE_VIEW).where(conditions).fetchInto(twitch.explorer.database.jooq.gen.tables.pojos.LiveStreamUserVoteView.class);
+    }
+
+    public List<Language> getLanguages() {
+        return create.selectFrom(LANGUAGE).fetchInto(twitch.explorer.database.jooq.gen.tables.pojos.Language.class);
+    }
+
+    public List<StreamType> getStreamTypes() {
+        return create.selectFrom(STREAM_TYPE).fetchInto(twitch.explorer.database.jooq.gen.tables.pojos.StreamType.class);
+
     }
 }

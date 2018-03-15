@@ -6,7 +6,9 @@ import twitch.explorer.database.jooq.gen.tables.pojos.GamesLive;
 import twitch.explorer.database.jooq.gen.tables.records.GamesLiveRecord;
 import twitch.explorer.utils.GsonHelper;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -21,7 +23,10 @@ public class GameEndpoint {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String helloWorld() {
+    public String helloWorld(@Context HttpServletRequest req) {
+
+        System.out.println(req.getRequestURL().toString());
+
 
         try {
             JooqHandler jooqHandler = JooqHandler.get();

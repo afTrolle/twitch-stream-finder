@@ -16,6 +16,8 @@ public class SessionFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         req.getSession(true);
+        System.out.println(req.getRequestURL());
+        System.out.println(req.getQueryString());
         chain.doFilter(request, response);
     }
 
