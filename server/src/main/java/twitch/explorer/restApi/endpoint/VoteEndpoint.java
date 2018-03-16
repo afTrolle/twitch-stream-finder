@@ -3,6 +3,8 @@ package twitch.explorer.restApi.endpoint;
 
 import org.jooq.exception.DataAccessException;
 import twitch.explorer.database.JooqHandler;
+import twitch.explorer.restApi.websocket.WebSocketHandler;
+import twitch.explorer.restApi.websocket.response.UpdateObject;
 import twitch.explorer.utils.GsonHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +42,8 @@ public class VoteEndpoint {
         try {
             JooqHandler jooq = JooqHandler.get();
             jooq.createVote(userIdL, isPositive, sessionToken, remoteHost);
+            UpdateObject updateObject = new UpdateObject(userIdL);
+            WebSocketHandler.getInstance().sendUpdateToEveryone(updateObject);
         } catch (DataAccessException e) {
             if (e.getMessage().contains("cookie_UNIQUE")) {
                 return Response.status(Response.Status.BAD_REQUEST).entity("cookie already used").build();
@@ -50,6 +54,7 @@ public class VoteEndpoint {
         } catch (SQLException e) {
             return Response.serverError().build();
         }
+
 
         return Response.ok(GsonHelper.gson.toJson("created vote"), MediaType.APPLICATION_JSON).build();
     }

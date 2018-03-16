@@ -5,6 +5,8 @@ import org.jooq.Record1;
 import org.jooq.Result;
 import twitch.explorer.database.JooqHandler;
 import twitch.explorer.database.jooq.gen.tables.records.*;
+import twitch.explorer.restApi.websocket.WebSocketHandler;
+import twitch.explorer.restApi.websocket.response.UpdateObject;
 import twitch.explorer.scraper.twitchApi.TwitchApiConfig;
 import twitch.explorer.scraper.twitchApi.json.follower.Follows;
 import twitch.explorer.scraper.twitchApi.json.games.Game;
@@ -26,6 +28,7 @@ public class TwitchScrapper {
     private TwitchApiClient client;
     private TwitchApiClient followerClient;
     private boolean isScraping = true;
+    private WebSocketHandler webSocketHandler;
 
     public TwitchScrapper(JooqHandler jooqHandler) {
         this.jooqHandler = jooqHandler;
@@ -33,6 +36,7 @@ public class TwitchScrapper {
 
     public void start() {
 
+        webSocketHandler = WebSocketHandler.getInstance();
         Config config = Config.get();
         TwitchApiConfig apiConfig = new TwitchApiConfig(config.getTwitchClientId(), config.getTwitchClientSecret(), config.getTwitchRateLimit());
         client = new TwitchApiClient(apiConfig);
@@ -67,12 +71,18 @@ public class TwitchScrapper {
                 for (LiveLongestTimeSinceFollowerUpdateViewRecord liveStream : sinceUpdateFollowers) {
                     Long userId = liveStream.getUserId();
                     Follows fetchedFollowers = followerClient.getAmountOfFollowers(userId);
+                    System.out.println("Followers Fetched:" + follows.size());
                     fetchedFollowers.userID = liveStream.getUserId();
                     follows.add(fetchedFollowers);
                 }
 
                 //TODO update DB
                 jooqHandler.createFollowers(follows);
+                System.out.println("Followers created:" + follows.size());
+                if (follows.size() > 0) {
+                    UpdateObject updateObject = new UpdateObject(follows);
+                    webSocketHandler.sendUpdateToEveryone(updateObject);
+                }
                 follows.clear();
             } catch (UniformInterfaceException e) {
                 try {
@@ -103,7 +113,6 @@ public class TwitchScrapper {
             e.printStackTrace();
         }
     }
-
 
     private void createMissingGames(HashMap<String, Stream> liveStreams) throws UniformInterfaceException {
 
@@ -156,6 +165,10 @@ public class TwitchScrapper {
         for (StreamRecord streamRecord : streamRecords) {
             streamRecord.setEnded(timestamp);
             streamRecord.update();
+        }
+        if (streamRecords.size() > 0) {
+            UpdateObject updateObject = new UpdateObject(streamRecords);
+            webSocketHandler.sendUpdateToEveryone(updateObject);
         }
     }
 
@@ -230,25 +243,43 @@ public class TwitchScrapper {
     private void updateStream(StreamRecord streamRecord, GameRecord game, LanguageRecord lanugage, StreamTypeRecord
             streamType, UserRecord user, Stream stream) {
 
+        Boolean isUpdated = false;
         if (streamRecord == null) {
             System.out.println("No Stream record in UpdateStream");
             return;
         }
 
-        if (game != null && game.getGameId() > 0 && !game.getGameId().equals(streamRecord.getGameId()))
+        if (game != null && game.getGameId() > 0 && !game.getGameId().equals(streamRecord.getGameId())) {
             streamRecord.setGameId(game.getGameId());
-        if (!streamRecord.getLanguageId().equals(lanugage.getLanguageId()))
+            isUpdated = true;
+        }
+        if (!streamRecord.getLanguageId().equals(lanugage.getLanguageId())) {
             streamRecord.setLanguageId(lanugage.getLanguageId());
-        if (!streamRecord.getStreamTypeId().equals(streamType.getStreamTypeId()))
+            isUpdated = true;
+        }
+        if (!streamRecord.getStreamTypeId().equals(streamType.getStreamTypeId())) {
             streamRecord.setStreamTypeId(streamType.getStreamTypeId());
-        if (!streamRecord.getTitle().equals(stream.title))
+            isUpdated = true;
+        }
+        if (!streamRecord.getTitle().equals(stream.title)) {
             streamRecord.setTitle(stream.title);
-        if (!streamRecord.getThumbnail().equals(stream.thumbnailUrl))
+            isUpdated = true;
+        }
+        if (!streamRecord.getThumbnail().equals(stream.thumbnailUrl)) {
             streamRecord.setThumbnail(stream.thumbnailUrl);
-        if (streamRecord.getViewCount() != stream.viewerCount)
+            isUpdated = true;
+        }
+        if (streamRecord.getViewCount() != stream.viewerCount) {
             streamRecord.setViewCount(stream.viewerCount);
+            isUpdated = true;
+        }
 
-        streamRecord.update();
+        if (isUpdated) {
+            streamRecord.update();
+
+            UpdateObject updateObject = new UpdateObject(streamRecord);
+            webSocketHandler.sendUpdateToEveryone(updateObject);
+        }
     }
 
     private UserRecord createUser(User userJson) throws InterruptedException {

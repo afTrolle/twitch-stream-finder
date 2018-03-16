@@ -1,28 +1,22 @@
-package com.twitchexplorer.twitchexplorer.view.fragment;
+package com.twitchexplorer.twitchexplorer.view.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.twitchexplorer.twitchexplorer.R;
 import com.twitchexplorer.twitchexplorer.model.pojo.LiveStreamUserVoteView;
-import com.twitchexplorer.twitchexplorer.view.view.StreamView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by alexa on 2018-03-15.
- */
-
-class StreamsAdapter extends RecyclerView.Adapter<StreamsAdapter.ViewHolder> {
+public class StreamsAdapter extends RecyclerView.Adapter<StreamsAdapter.ViewHolder> {
 
     private final List<LiveStreamUserVoteView> viewData;
     private final OnClickListener onClickListener;

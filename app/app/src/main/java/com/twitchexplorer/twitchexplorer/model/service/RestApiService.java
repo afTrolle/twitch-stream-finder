@@ -6,6 +6,7 @@ import android.util.Log;
 import com.android.volley.RequestQueue;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.twitchexplorer.twitchexplorer.model.constants.Constants;
 import com.twitchexplorer.twitchexplorer.model.pojo.BroadcasterType;
 import com.twitchexplorer.twitchexplorer.model.pojo.GamesLive;
 import com.twitchexplorer.twitchexplorer.model.pojo.Language;
@@ -21,11 +22,14 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 
 
 public class RestApiService {
 
-    private final static String baseUrl = "http://192.168.0.4:8080";
+    private final static String baseUrl = "http://" + Constants.URL_AND_PORT;
     private final static String gamesUrl = baseUrl + "/api/game";
     private final static String languagesUrl = baseUrl + "/api/stream/languages";
     private final static String userUrl = baseUrl + "/api/user";
@@ -34,6 +38,7 @@ public class RestApiService {
     RequestQueue queue;
 
     private final Gson gson;
+
     private final OkHttpClient client;
     android.os.Handler handler;
 
@@ -45,6 +50,10 @@ public class RestApiService {
 
     private void runOnUiThread(Runnable r) {
         handler.post(r);
+    }
+
+    public WebSocket createWebSocket(Request request, WebSocketListener webSocketService) {
+        return client.newWebSocket(request, webSocketService);
     }
 
 

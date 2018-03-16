@@ -11,7 +11,6 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.twitchexplorer.twitchexplorer.R;
 import com.twitchexplorer.twitchexplorer.lib.dagger.component.FragmentComponent;
 import com.twitchexplorer.twitchexplorer.lib.utils.LanuageHelper;
-import com.twitchexplorer.twitchexplorer.lib.utils.SnackbarHelper;
 import com.twitchexplorer.twitchexplorer.model.pojo.BroadcasterType;
 import com.twitchexplorer.twitchexplorer.model.pojo.GamesLive;
 import com.twitchexplorer.twitchexplorer.model.pojo.Language;

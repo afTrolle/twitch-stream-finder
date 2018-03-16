@@ -52,6 +52,11 @@ dependencies {
     // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-servlet
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.3.+'
 
+// https://mvnrepository.com/artifact/org.eclipse.jetty.websocket/websocket-server
+    compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.3.+'
+
+
+
 }
 
 // Use your favourite XML builder to construct the code generation configuration file

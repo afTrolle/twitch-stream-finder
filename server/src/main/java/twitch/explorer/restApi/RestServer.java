@@ -8,7 +8,10 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.server.session.*;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import twitch.explorer.restApi.filter.SessionFilter;
+import twitch.explorer.restApi.websocket.WebSocket;
 import twitch.explorer.settings.Config;
 
 import javax.servlet.DispatcherType;
@@ -35,9 +38,13 @@ public class RestServer {
 
         server.setHandler(context);
 
+        WebSocket webSocket = new WebSocket();
+        ServletHolder holder = new ServletHolder(webSocket);
+        context.addServlet(holder, "/socket");
+
         try {
             server.start();
-         //   server.join();
+            //   server.join();
         } catch (Exception e) {
             e.printStackTrace();
         }

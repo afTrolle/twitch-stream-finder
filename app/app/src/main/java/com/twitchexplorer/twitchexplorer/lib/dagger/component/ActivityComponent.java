@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.twitchexplorer.twitchexplorer.model.service.FragmentService;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
+import com.twitchexplorer.twitchexplorer.model.service.WebSocketService;
 import com.twitchexplorer.twitchexplorer.view.activity.MainActivity;
 import com.twitchexplorer.twitchexplorer.lib.dagger.module.ActivityModule;
 import com.twitchexplorer.twitchexplorer.lib.dagger.qualifier.ActivityContextQualifier;
@@ -22,6 +23,8 @@ public interface ActivityComponent {
     RestApiService restApiService();
 
     FragmentService fragmentService();
+
+    WebSocketService WebSocketService();
     // PermissionService permissionService();
     //Appliaction Level
     /*

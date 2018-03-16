@@ -9,6 +9,7 @@ import com.twitchexplorer.twitchexplorer.lib.dagger.scope.ApplicationScope;
 import com.twitchexplorer.twitchexplorer.model.service.GsonService;
 import com.twitchexplorer.twitchexplorer.model.service.PermissionService;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
+import com.twitchexplorer.twitchexplorer.model.service.WebSocketService;
 
 import javax.inject.Singleton;
 
@@ -48,6 +49,12 @@ public class ApplicationModule {
     @ApplicationScope
     public PermissionService permissionService() {
         return new PermissionService();
+    }
+
+    @Provides
+    @ApplicationScope
+    public WebSocketService webSocketService(RestApiService restApiService){
+        return new WebSocketService(restApiService);
     }
 
 }

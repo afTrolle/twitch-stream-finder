@@ -6,25 +6,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.BundleCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.twitchexplorer.twitchexplorer.R;
 import com.twitchexplorer.twitchexplorer.lib.dagger.component.FragmentComponent;
-import com.twitchexplorer.twitchexplorer.lib.utils.SnackbarHelper;
 import com.twitchexplorer.twitchexplorer.lib.utils.TwitchHelper;
 import com.twitchexplorer.twitchexplorer.model.pojo.LiveStreamUserVoteView;
 import com.twitchexplorer.twitchexplorer.model.service.FragmentService;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
+import com.twitchexplorer.twitchexplorer.view.view.adapter.StreamsAdapter;
 
 import java.util.List;
 
