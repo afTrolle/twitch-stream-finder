@@ -21,6 +21,7 @@ import com.twitchexplorer.twitchexplorer.lib.utils.TwitchHelper;
 import com.twitchexplorer.twitchexplorer.model.pojo.LiveStreamUserVoteView;
 import com.twitchexplorer.twitchexplorer.model.service.FragmentService;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
+import com.twitchexplorer.twitchexplorer.model.service.WebSocketService;
 import com.twitchexplorer.twitchexplorer.view.view.adapter.StreamsAdapter;
 
 import java.util.List;
@@ -30,7 +31,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 
-public class StreamViewFragment extends BaseFragment {
+public class StreamViewFragment extends BaseFragment implements WebSocketService.WebSocketCallback {
 
     private final static String bundleKey = "params";
 
@@ -43,9 +44,15 @@ public class StreamViewFragment extends BaseFragment {
     @BindView(R.id.stream_recycler_view)
     RecyclerView recyclerView;
 
+    @Inject
+    WebSocketService webSocketService;
 
     @BindView(R.id.search_fab)
     FloatingActionButton mFab;
+
+    private StreamsAdapter mAdapter;
+
+    private RestApiService.SearchParams params;
 
     @Override
     int getViewLayout() {
@@ -83,7 +90,7 @@ public class StreamViewFragment extends BaseFragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutManager);
         Gson gson = new Gson();
-        RestApiService.SearchParams params = gson.fromJson(getArguments().getString(bundleKey), RestApiService.SearchParams.class);
+        params = gson.fromJson(getArguments().getString(bundleKey), RestApiService.SearchParams.class);
         searchForStreams(params);
 
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -100,11 +107,13 @@ public class StreamViewFragment extends BaseFragment {
             @Override
             public void onResponse(List<LiveStreamUserVoteView> response) {
                 progressBar.setVisibility(View.GONE);
-                StreamsAdapter mAdapter = new StreamsAdapter(response, new StreamsAdapter.OnClickListener() {
+                mAdapter = new StreamsAdapter(response, new StreamsAdapter.OnClickListener() {
                     @Override
                     public void onClick(LiveStreamUserVoteView viewData) {
-                        Intent intent = TwitchHelper.start(getContext(), viewData.getName());
-                        startActivity(intent);
+
+                        UserFragment userFragment = UserFragment.newInstance(viewData.getUserId());
+                        fragmentService.replaceFragment(userFragment, true);
+
                     }
                 });
                 recyclerView.setAdapter(mAdapter);
@@ -125,5 +134,29 @@ public class StreamViewFragment extends BaseFragment {
         bundle.putString(bundleKey, gson.toJson(params));
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        webSocketService.setCallback(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        webSocketService.setCallback(null);
+    }
+
+    //called with updates
+    @Override
+    public void onUpdate(WebSocketService.UpdateObject updateObject) {
+        if (updateObject != null) {
+            for (Long streamId : updateObject.streamIds) {
+                if (mAdapter.isStreamId(streamId)) {
+                    searchForStreams(params);
+                }
+            }
+        }
     }
 }

@@ -4,6 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.twitchexplorer.twitchexplorer.model.constants.Constants;
@@ -12,6 +16,8 @@ import com.twitchexplorer.twitchexplorer.model.pojo.GamesLive;
 import com.twitchexplorer.twitchexplorer.model.pojo.Language;
 import com.twitchexplorer.twitchexplorer.model.pojo.LiveStreamUserVoteView;
 import com.twitchexplorer.twitchexplorer.model.pojo.StreamType;
+import com.twitchexplorer.twitchexplorer.model.pojo.User;
+import com.twitchexplorer.twitchexplorer.model.pojo.UserInfoView;
 import com.twitchexplorer.twitchexplorer.model.pojo.UserType;
 
 import java.lang.reflect.Type;
@@ -21,8 +27,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
@@ -43,7 +51,8 @@ public class RestApiService {
     android.os.Handler handler;
 
     public RestApiService(Context context) {
-        client = new OkHttpClient();
+        ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
         gson = new Gson();
         handler = new android.os.Handler(context.getMainLooper());
     }
@@ -85,6 +94,32 @@ public class RestApiService {
                         @Override
                         public void run() {
                             Log.d("done", "error,");
+                            restError.onError(e);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
+    private void postHTTP(final RestResponse response, final RestError restError, final String url, final Type type) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    okhttp3.Request request = new okhttp3.Request.Builder().url(url).post(RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), "") ).build();
+                    okhttp3.Response resp = client.newCall(request).execute();
+                    final Object o = gson.fromJson(resp.body().charStream(), type);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            response.onResponse(o);
+                        }
+                    });
+                } catch (final Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
                             restError.onError(e);
                         }
                     });
@@ -173,6 +208,22 @@ public class RestApiService {
     public void searchStreams(RestResponse<List<LiveStreamUserVoteView>> response, RestError restError, SearchParams params) {
         String url = streamURL + "/search";
         getHTTP(response, restError, appendParams(params.map, url), liveStreamList);
+    }
+
+    private final Type userType = new TypeToken<UserInfoView>() {
+    }.getType();
+
+    public void getUser(RestResponse<UserInfoView> response, RestError restError, Long userId) {
+        String url = userUrl + "/" + userId;
+        getHTTP(response, restError, url, userType);
+    }
+
+
+    public void vote(RestResponse<String> response, RestError restError, Long userId, boolean b) {
+        String url = baseUrl+"/api/vote/user/"+userId;
+        Map<String,String> map = new HashMap<>();
+        map.put("positive",Boolean.toString(b));
+        postHTTP(response,restError, appendParams(map, url),String.class);
     }
 
 

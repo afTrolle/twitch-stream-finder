@@ -14,5 +14,4 @@ public class WebSocket extends WebSocketServlet {
         factory.register(WebSocketEndpoint.class);
     }
 
-
 }

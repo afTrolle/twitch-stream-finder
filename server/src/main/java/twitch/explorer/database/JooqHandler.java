@@ -257,4 +257,8 @@ public class JooqHandler {
         return create.selectFrom(STREAM_TYPE).fetchInto(twitch.explorer.database.jooq.gen.tables.pojos.StreamType.class);
 
     }
+
+    public UserInfoView getUserData(long userId) {
+        return  create.selectFrom(USER_INFO_VIEW).where(USER_INFO_VIEW.USER_ID.eq(userId)).fetchOneInto(UserInfoView.class);
+    }
 }

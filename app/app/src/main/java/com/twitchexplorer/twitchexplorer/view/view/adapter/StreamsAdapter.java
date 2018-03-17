@@ -21,6 +21,15 @@ public class StreamsAdapter extends RecyclerView.Adapter<StreamsAdapter.ViewHold
     private final List<LiveStreamUserVoteView> viewData;
     private final OnClickListener onClickListener;
 
+    public boolean isStreamId(Long streamId) {
+        for (LiveStreamUserVoteView viewDatum : viewData) {
+            if (viewDatum.getStreamId().equals(streamId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public interface OnClickListener {
         public void onClick(LiveStreamUserVoteView viewData);
     }

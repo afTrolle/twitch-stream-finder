@@ -18,6 +18,7 @@ import com.twitchexplorer.twitchexplorer.model.pojo.StreamType;
 import com.twitchexplorer.twitchexplorer.model.pojo.UserType;
 import com.twitchexplorer.twitchexplorer.model.service.FragmentService;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
+import com.twitchexplorer.twitchexplorer.model.service.WebSocketService;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 
@@ -69,6 +70,7 @@ public class SearchFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         initSpinners();
     }
+
 
     private void initSpinners() {
 
@@ -274,7 +276,7 @@ public class SearchFragment extends BaseFragment {
         }
 
         String broadCasterString = broadCasterTypeSpinner.getText().toString();
-        if (!broadCasterString.isEmpty()){
+        if (!broadCasterString.isEmpty()) {
             for (BroadcasterType broadcasterType : broadcasterTypes) {
                 if (broadcasterType.getType().equals(broadCasterString))
                     params.setBroadCasterTypeId(broadcasterType.getBroadcasterTypeId());
@@ -308,4 +310,5 @@ public class SearchFragment extends BaseFragment {
             e.printStackTrace();
         }
     };
+
 }

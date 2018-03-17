@@ -22,6 +22,7 @@ public class WebSocketEndpoint {
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
+        System.out.println("Websocket Connected: " +session.getRemote().getInetSocketAddress());
         WebSocketHandler.getInstance().addSession(session);
     }
 
