@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `twitch` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `twitch`;
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
--- Host: localhost    Database: twitch
+-- Host: 127.0.0.1    Database: twitch
 -- ------------------------------------------------------
--- Server version	5.7.21-log
+-- Server version	5.7.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,7 +30,7 @@ CREATE TABLE `broadcaster_type` (
   PRIMARY KEY (`broadcaster_type_id`),
   UNIQUE KEY `type_UNIQUE` (`type`),
   UNIQUE KEY `id_UNIQUE` (`broadcaster_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='more info at: https://dev.twitch.tv/docs/api/reference#get-users\nUser’s broadcaster type: "partner", "affiliate", or "".';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='more info at: https://dev.twitch.tv/docs/api/reference#get-users\nUser’s broadcaster type: "partner", "affiliate", or "".';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `followers` (
   PRIMARY KEY (`followers_id`),
   KEY `fk_followers_user_idx` (`user_id`),
   CONSTRAINT `fk_followers_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=160657 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=721 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +98,7 @@ CREATE TABLE `game` (
   UNIQUE KEY `id_UNIQUE` (`game_id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   UNIQUE KEY `art_url_UNIQUE` (`art_url`)
-) ENGINE=InnoDB AUTO_INCREMENT=504714 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=504713 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `language` (
   PRIMARY KEY (`language_id`),
   UNIQUE KEY `language_id_UNIQUE` (`language_id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,7 +290,7 @@ CREATE TABLE `stream_type` (
   PRIMARY KEY (`stream_type_id`),
   UNIQUE KEY `stream_type_id_UNIQUE` (`stream_type_id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -323,6 +323,36 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary view structure for view `user_info_view`
+--
+
+DROP TABLE IF EXISTS `user_info_view`;
+/*!50001 DROP VIEW IF EXISTS `user_info_view`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE VIEW `user_info_view` AS SELECT 
+ 1 AS `user_id`,
+ 1 AS `name`,
+ 1 AS `description`,
+ 1 AS `user_type_id`,
+ 1 AS `broadcaster_type_id`,
+ 1 AS `offline_image`,
+ 1 AS `profile_image`,
+ 1 AS `total_views`,
+ 1 AS `stream_id`,
+ 1 AS `title`,
+ 1 AS `started`,
+ 1 AS `thumbnail`,
+ 1 AS `view_count`,
+ 1 AS `game_id`,
+ 1 AS `stream_type_id`,
+ 1 AS `language_id`,
+ 1 AS `ratio`,
+ 1 AS `positive_votes`,
+ 1 AS `negative_votes`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `user_type`
 --
 
@@ -335,7 +365,7 @@ CREATE TABLE `user_type` (
   PRIMARY KEY (`user_type_id`),
   UNIQUE KEY `id_UNIQUE` (`user_type_id`),
   UNIQUE KEY `type_UNIQUE` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -348,7 +378,9 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 /*!50001 CREATE VIEW `user_vote_ratio_view` AS SELECT 
  1 AS `user_id`,
- 1 AS `ratio`*/;
+ 1 AS `ratio`,
+ 1 AS `positive_votes`,
+ 1 AS `negative_votes`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -367,7 +399,7 @@ CREATE TABLE `vote` (
   UNIQUE KEY `cookie_UNIQUE` (`cookie`),
   KEY `user_id_fk_idx` (`user_id`),
   CONSTRAINT `fk_vote_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -487,6 +519,24 @@ CREATE TABLE `vote` (
 /*!50001 SET collation_connection      = @saved_col_connection */;
 
 --
+-- Final view structure for view `user_info_view`
+--
+
+/*!50001 DROP VIEW IF EXISTS `user_info_view`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `user_info_view` AS select `user`.`user_id` AS `user_id`,`user`.`name` AS `name`,`user`.`description` AS `description`,`user`.`user_type_id` AS `user_type_id`,`user`.`broadcaster_type_id` AS `broadcaster_type_id`,`user`.`offline_image` AS `offline_image`,`user`.`profile_image` AS `profile_image`,`user`.`total_views` AS `total_views`,`live_streams_view`.`stream_id` AS `stream_id`,`live_streams_view`.`title` AS `title`,`live_streams_view`.`started` AS `started`,`live_streams_view`.`thumbnail` AS `thumbnail`,`live_streams_view`.`view_count` AS `view_count`,`live_streams_view`.`game_id` AS `game_id`,`live_streams_view`.`stream_type_id` AS `stream_type_id`,`live_streams_view`.`language_id` AS `language_id`,`user_vote_ratio_view`.`ratio` AS `ratio`,`user_vote_ratio_view`.`positive_votes` AS `positive_votes`,`user_vote_ratio_view`.`negative_votes` AS `negative_votes` from ((`user` left join `live_streams_view` on((`user`.`user_id` = `live_streams_view`.`user_id`))) left join `user_vote_ratio_view` on((`user_vote_ratio_view`.`user_id` = `user`.`user_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `user_vote_ratio_view`
 --
 
@@ -499,7 +549,7 @@ CREATE TABLE `vote` (
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `user_vote_ratio_view` AS select `vote`.`user_id` AS `user_id`,(sum((case when (`vote`.`state` = 'positive') then 1 else 0 end)) / count(0)) AS `ratio` from `vote` group by `vote`.`user_id` */;
+/*!50001 VIEW `user_vote_ratio_view` AS select `vote`.`user_id` AS `user_id`,(sum((case when (`vote`.`state` = 'positive') then 1 else 0 end)) / count(0)) AS `ratio`,sum((case when (`vote`.`state` = 'positive') then 1 else 0 end)) AS `positive_votes`,sum((case when (`vote`.`state` = 'negative') then 1 else 0 end)) AS `negative_votes` from `vote` group by `vote`.`user_id` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -513,4 +563,4 @@ CREATE TABLE `vote` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-15  9:16:47
+-- Dump completed on 2018-03-18 19:21:07
