@@ -109,7 +109,7 @@ public class RestApiService {
                 try {
                     okhttp3.Request request = new okhttp3.Request.Builder().url(url).post(RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), "") ).build();
                     okhttp3.Response resp = client.newCall(request).execute();
-                    final Object o = gson.fromJson(resp.body().charStream(), type);
+                    final Object o = gson.fromJson(resp.body().charStream(), String.class);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

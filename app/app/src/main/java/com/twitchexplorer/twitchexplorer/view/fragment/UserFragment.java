@@ -157,7 +157,7 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
             streamTile.setText(streamTitle);
 
         final Integer gameId = response.getGameId();
-        if (gameId > 0)
+        if ( gameId != null && gameId > 0)
             restApiService.getGamesBeingPlayed(new RestApiService.RestResponse<List<GamesLive>>() {
                 @Override
                 public void onResponse(List<GamesLive> response) {
