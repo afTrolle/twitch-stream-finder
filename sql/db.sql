@@ -80,7 +80,7 @@ CREATE TABLE `followers` (
   PRIMARY KEY (`followers_id`),
   KEY `fk_followers_user_idx` (`user_id`),
   CONSTRAINT `fk_followers_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=721 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8881 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,7 +98,7 @@ CREATE TABLE `game` (
   UNIQUE KEY `id_UNIQUE` (`game_id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   UNIQUE KEY `art_url_UNIQUE` (`art_url`)
-) ENGINE=InnoDB AUTO_INCREMENT=504713 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=504799 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `language` (
   PRIMARY KEY (`language_id`),
   UNIQUE KEY `language_id_UNIQUE` (`language_id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +365,7 @@ CREATE TABLE `user_type` (
   PRIMARY KEY (`user_type_id`),
   UNIQUE KEY `id_UNIQUE` (`user_type_id`),
   UNIQUE KEY `type_UNIQUE` (`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -396,10 +396,10 @@ CREATE TABLE `vote` (
   `state` enum('positive','negative') NOT NULL,
   `cookie` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`vote_id`),
-  UNIQUE KEY `cookie_UNIQUE` (`cookie`),
+  UNIQUE KEY `primary_uniq` (`cookie`,`user_id`),
   KEY `user_id_fk_idx` (`user_id`),
   CONSTRAINT `fk_vote_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -563,4 +563,4 @@ CREATE TABLE `vote` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-18 19:21:07
+-- Dump completed on 2018-03-18 21:01:02
