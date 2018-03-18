@@ -28,15 +28,15 @@ public class VoteEndpoint {
         //remote ip or proxy ip
         String remoteHost = req.getRemoteHost();
 
-        if (isPositive == null){
-            return Response.status(Response.Status.BAD_REQUEST).entity("requires 'positive' query parameter to be true or false").build();
+        if (isPositive == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(GsonHelper.gson.toJson("requires 'positive' query parameter to be true or false")).type(MediaType.APPLICATION_JSON).build();
         }
 
         long userIdL = 0;
         try {
             userIdL = Long.parseLong(userId);
         } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("userID needs to be user a number").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(GsonHelper.gson.toJson("userID needs to be user a number")).type(MediaType.APPLICATION_JSON).build();
         }
 
         try {
@@ -46,11 +46,11 @@ public class VoteEndpoint {
             WebSocketHandler.getInstance().sendUpdateToEveryone(updateObject);
         } catch (DataAccessException e) {
             if (e.getMessage().contains("cookie_UNIQUE")) {
-                return Response.status(Response.Status.BAD_REQUEST).entity("cookie already used").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity(GsonHelper.gson.toJson("cookie already used")).type(MediaType.APPLICATION_JSON).build();
             } else if (e.getMessage().contains("CONSTRAINT `fk_vote_user` FOREIGN KEY")) {
-                return Response.status(Response.Status.BAD_REQUEST).entity("userID does not exist").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity(GsonHelper.gson.toJson("userID does not exist")).type(MediaType.APPLICATION_JSON).build();
             }
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getCause().getMessage()).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getCause().getMessage()).type(MediaType.APPLICATION_JSON).build();
         } catch (SQLException e) {
             return Response.serverError().build();
         }

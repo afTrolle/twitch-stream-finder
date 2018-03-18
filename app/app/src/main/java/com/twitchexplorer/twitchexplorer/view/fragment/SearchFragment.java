@@ -3,7 +3,6 @@ package com.twitchexplorer.twitchexplorer.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.appyvet.materialrangebar.RangeBar;
@@ -18,7 +17,6 @@ import com.twitchexplorer.twitchexplorer.model.pojo.StreamType;
 import com.twitchexplorer.twitchexplorer.model.pojo.UserType;
 import com.twitchexplorer.twitchexplorer.model.service.FragmentService;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
-import com.twitchexplorer.twitchexplorer.model.service.WebSocketService;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 
@@ -76,7 +74,7 @@ public class SearchFragment extends BaseFragment {
 
         restApiService.getGamesBeingPlayed(new RestApiService.RestResponse<List<GamesLive>>() {
             @Override
-            public void onResponse(List<GamesLive> response) {
+            public void onResponse(List<GamesLive> response, int code) {
                 gamesLiveList = response;
                 ArrayList<String> gameNames = new ArrayList<>(response.size());
                 gameNames.add("Ignore");
@@ -89,7 +87,7 @@ public class SearchFragment extends BaseFragment {
 
         restApiService.getLanguages(new RestApiService.RestResponse<List<Language>>() {
             @Override
-            public void onResponse(List<Language> response) {
+            public void onResponse(List<Language> response, int code) {
                 languages = response;
                 List<String> languages = LanuageHelper.help(response);
                 languages.add(0, "Ignore");
@@ -99,7 +97,7 @@ public class SearchFragment extends BaseFragment {
 
         restApiService.getBroadCasterTypes(new RestApiService.RestResponse<List<BroadcasterType>>() {
             @Override
-            public void onResponse(List<BroadcasterType> response) {
+            public void onResponse(List<BroadcasterType> response, int code) {
                 broadcasterTypes = response;
                 List<String> types = new ArrayList<>();
                 types.add("Ignore");
@@ -112,7 +110,7 @@ public class SearchFragment extends BaseFragment {
 
         restApiService.getStreamTypes(new RestApiService.RestResponse<List<StreamType>>() {
             @Override
-            public void onResponse(List<StreamType> response) {
+            public void onResponse(List<StreamType> response, int code) {
                 streamTypeList = response;
                 ArrayList<String> types = new ArrayList<>();
                 types.add("Ignore");
@@ -125,7 +123,7 @@ public class SearchFragment extends BaseFragment {
 
         restApiService.getUserTypes(new RestApiService.RestResponse<List<UserType>>() {
             @Override
-            public void onResponse(List<UserType> response) {
+            public void onResponse(List<UserType> response, int code) {
                 userTypeList = response;
                 ArrayList<String> list = new ArrayList<>();
                 list.add("Ignore");

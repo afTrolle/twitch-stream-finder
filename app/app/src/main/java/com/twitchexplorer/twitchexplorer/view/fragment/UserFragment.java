@@ -1,12 +1,11 @@
 package com.twitchexplorer.twitchexplorer.view.fragment;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,8 +13,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.twitchexplorer.twitchexplorer.R;
 import com.twitchexplorer.twitchexplorer.lib.dagger.component.FragmentComponent;
+import com.twitchexplorer.twitchexplorer.lib.utils.SnackbarHelper;
+import com.twitchexplorer.twitchexplorer.lib.utils.TwitchHelper;
 import com.twitchexplorer.twitchexplorer.model.pojo.GamesLive;
-import com.twitchexplorer.twitchexplorer.model.pojo.User;
 import com.twitchexplorer.twitchexplorer.model.pojo.UserInfoView;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
 import com.twitchexplorer.twitchexplorer.model.service.WebSocketService;
@@ -60,7 +60,6 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
 
     // up vote
 
-
     @BindView(R.id.user_vote_up_count_text)
     TextView numberOfUpVotes;
 
@@ -71,6 +70,7 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
     WebSocketService socketService;
 
     private long userId;
+    private String name;
 
     @Override
     int getViewLayout() {
@@ -122,7 +122,7 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
     }
 
     @Override
-    public void onResponse(UserInfoView response) {
+    public void onResponse(UserInfoView response, int code) {
 
         BigInteger bigInteger = response.getPositiveVotes();
         if (bigInteger != null) {
@@ -138,7 +138,7 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
         }
         float ratio = response.getRatio() == null ? 0f : response.getRatio().floatValue();
         userRating.setText(toPercentage(ratio, 2));
-
+        name = response.getName();
         userName.setText(response.getName());
         userDescription.setText(response.getDescription());
 
@@ -157,10 +157,10 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
             streamTile.setText(streamTitle);
 
         final Integer gameId = response.getGameId();
-        if ( gameId != null && gameId > 0)
+        if (gameId != null && gameId > 0)
             restApiService.getGamesBeingPlayed(new RestApiService.RestResponse<List<GamesLive>>() {
                 @Override
-                public void onResponse(List<GamesLive> response) {
+                public void onResponse(List<GamesLive> response, int code) {
                     for (GamesLive gamesLive : response) {
                         if (gamesLive.getGameId().equals(gameId)) {
                             streamGame.setText(gamesLive.getName());
@@ -169,7 +169,12 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
                     }
 
                 }
-            }, this);
+            }, new RestApiService.RestError() {
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
     }
 
     @BindView(R.id.user_thumb_down_button)
@@ -179,10 +184,17 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
     public void onThumbDown() {
         restApiService.vote(new RestApiService.RestResponse<String>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(String response, int code) {
                 thumbDownButton.setImageTintList(ColorStateList.valueOf(Color.RED));
+
+                SnackbarHelper.showWarning(getView(), "Code: " + code + " response: " + response);
             }
-        }, this, userId, false);
+        }, new RestApiService.RestError() {
+            @Override
+            public void onError(Exception e) {
+
+            }
+        }, userId, false);
     }
 
     @BindView(R.id.user_thumb_up_button)
@@ -193,8 +205,12 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
     public void onThumbUp() {
         restApiService.vote(new RestApiService.RestResponse<String>() {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(String response, int code) {
                 thumbUpButton.setImageTintList(ColorStateList.valueOf(Color.GREEN));
+
+                if (code != 200)
+                    SnackbarHelper.showWarning(getView(), "Code: " + code + " response: " + response);
+
             }
         }, this, userId, true);
     }
@@ -210,5 +226,12 @@ public class UserFragment extends BaseFragment implements RestApiService.RestErr
                 restApiService.getUser(this, this, userId);
             }
         }
+    }
+
+    @OnClick({R.id.user_stream_preview_image_view,R.id.user_profile_card})
+    public void onStreamPreviewClick() {
+        Intent intent = TwitchHelper.start(getContext(), name);
+        startActivity(intent);
+
     }
 }

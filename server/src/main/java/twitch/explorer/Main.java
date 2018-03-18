@@ -14,9 +14,9 @@ public class Main {
         try {
             JooqHandler jooqHandler = JooqHandler.get();
             RestServer restServer = new RestServer();
-          //  TwitchScrapper scrapper = new TwitchScrapper(jooqHandler);
-          //  scrapper.start();
-            //  jooqHandler.createGame("hello","http://helloworld.com");
+            TwitchScrapper scrapper = new TwitchScrapper(jooqHandler);
+            scrapper.start();
+          //  sjooqHandler.createGame("hello", "http://helloworld.com");
         } catch (SQLException e) {
             e.printStackTrace();
         }

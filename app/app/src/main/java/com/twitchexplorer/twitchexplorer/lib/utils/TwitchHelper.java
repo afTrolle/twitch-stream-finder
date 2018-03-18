@@ -17,8 +17,13 @@ public class TwitchHelper {
 
     public static Intent start(Context context, String userId) {
         // brings user to the market if app is not installed already
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("twitch://stream/" + userId));
+        if (isPackageInstalled("tv.twitch.android.app", context)) {
+            intent.setData(Uri.parse("twitch://stream/" + userId));
+        } else {
+            intent.setData(getUri(userId));
+        }
         return intent;
     }
 
@@ -30,5 +35,9 @@ public class TwitchHelper {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    public static Uri getUri(String name) {
+        return Uri.parse("http://twitch.tv/" + name);
     }
 }

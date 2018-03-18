@@ -1,7 +1,6 @@
 package com.twitchexplorer.twitchexplorer.view.fragment;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -17,7 +16,6 @@ import android.widget.ProgressBar;
 import com.google.gson.Gson;
 import com.twitchexplorer.twitchexplorer.R;
 import com.twitchexplorer.twitchexplorer.lib.dagger.component.FragmentComponent;
-import com.twitchexplorer.twitchexplorer.lib.utils.TwitchHelper;
 import com.twitchexplorer.twitchexplorer.model.pojo.LiveStreamUserVoteView;
 import com.twitchexplorer.twitchexplorer.model.service.FragmentService;
 import com.twitchexplorer.twitchexplorer.model.service.RestApiService;
@@ -67,6 +65,8 @@ public class StreamViewFragment extends BaseFragment implements WebSocketService
     @BindView(R.id.stream_progress_bar)
     ProgressBar progressBar;
 
+    boolean isVisible = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,13 +99,14 @@ public class StreamViewFragment extends BaseFragment implements WebSocketService
                 fragmentService.replaceFragment(new SearchFragment(), false);
             }
         });
-
     }
 
     private void searchForStreams(RestApiService.SearchParams params) {
         restApiService.searchStreams(new RestApiService.RestResponse<List<LiveStreamUserVoteView>>() {
             @Override
-            public void onResponse(List<LiveStreamUserVoteView> response) {
+            public void onResponse(List<LiveStreamUserVoteView> response, int code) {
+                if (progressBar == null)
+                    return;
                 progressBar.setVisibility(View.GONE);
                 mAdapter = new StreamsAdapter(response, new StreamsAdapter.OnClickListener() {
                     @Override

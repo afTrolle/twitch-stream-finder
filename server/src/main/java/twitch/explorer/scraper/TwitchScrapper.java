@@ -71,7 +71,7 @@ public class TwitchScrapper {
                 for (LiveLongestTimeSinceFollowerUpdateViewRecord liveStream : sinceUpdateFollowers) {
                     Long userId = liveStream.getUserId();
                     Follows fetchedFollowers = followerClient.getAmountOfFollowers(userId);
-                    System.out.println("Followers Fetched:" + follows.size());
+                 //   System.out.println("Followers Fetched:" + follows.size());
                     fetchedFollowers.userID = liveStream.getUserId();
                     follows.add(fetchedFollowers);
                 }

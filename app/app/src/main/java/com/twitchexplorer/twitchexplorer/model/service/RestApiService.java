@@ -9,6 +9,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.twitchexplorer.twitchexplorer.model.constants.Constants;
 import com.twitchexplorer.twitchexplorer.model.pojo.BroadcasterType;
@@ -16,7 +17,6 @@ import com.twitchexplorer.twitchexplorer.model.pojo.GamesLive;
 import com.twitchexplorer.twitchexplorer.model.pojo.Language;
 import com.twitchexplorer.twitchexplorer.model.pojo.LiveStreamUserVoteView;
 import com.twitchexplorer.twitchexplorer.model.pojo.StreamType;
-import com.twitchexplorer.twitchexplorer.model.pojo.User;
 import com.twitchexplorer.twitchexplorer.model.pojo.UserInfoView;
 import com.twitchexplorer.twitchexplorer.model.pojo.UserType;
 
@@ -53,7 +53,7 @@ public class RestApiService {
     public RestApiService(Context context) {
         ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
-        gson = new Gson();
+        gson = new GsonBuilder().setLenient().create();
         handler = new android.os.Handler(context.getMainLooper());
     }
 
@@ -67,7 +67,7 @@ public class RestApiService {
 
 
     public interface RestResponse<T> {
-        void onResponse(T response);
+        void onResponse(T response, int code);
     }
 
     public interface RestError {
@@ -80,13 +80,13 @@ public class RestApiService {
             public void run() {
                 try {
                     okhttp3.Request request = new okhttp3.Request.Builder().url(url).build();
-                    okhttp3.Response resp = client.newCall(request).execute();
+                    final okhttp3.Response resp = client.newCall(request).execute();
                     final Object o = gson.fromJson(resp.body().charStream(), type);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Log.d("done", "convertiondone");
-                            response.onResponse(o);
+                            response.onResponse(o, resp.code());
                         }
                     });
                 } catch (final Exception e) {
@@ -108,12 +108,13 @@ public class RestApiService {
             public void run() {
                 try {
                     okhttp3.Request request = new okhttp3.Request.Builder().url(url).post(RequestBody.create(MediaType.parse("text/plain; charset=utf-8"), "") ).build();
-                    okhttp3.Response resp = client.newCall(request).execute();
-                    final Object o = gson.fromJson(resp.body().charStream(), String.class);
+                    final okhttp3.Response resp = client.newCall(request).execute();
+                    final String string = resp.body().string();
+                    //final Object o = gson.fromJson(resp.body().charStream(), String.class);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            response.onResponse(o);
+                            response.onResponse(string,resp.code());
                         }
                     });
                 } catch (final Exception e) {
